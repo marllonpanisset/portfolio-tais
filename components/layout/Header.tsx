@@ -19,7 +19,7 @@ export function Header() {
           aria-current={pathname === "/" ? "page" : undefined}
           className="shrink-0 font-display text-lg font-bold tracking-[-0.04em]"
         >
-          TAIS
+          TAÍS
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Navegação principal">
