@@ -14,7 +14,7 @@ interface BuildMetadataInput {
  * Generates reusable metadata for dynamic pages.
  *
  * Centralizing metadata generation avoids duplicated SEO logic
- * across services, projects, blog posts and landing pages.
+ * across pages, works and portfolio sections.
  */
 export function buildMetadata({
   title,
