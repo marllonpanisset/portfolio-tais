@@ -29,8 +29,6 @@ Não há scripts `typecheck` ou `test` declarados. `npx tsc --noEmit` foi execut
 | `NEXT_PUBLIC_SITE_URL` | Base absoluta para metadata, sitemap e URLs estruturadas; sem valor usa `http://localhost:3000`. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Inicialização do cliente Supabase server-side. |
 | `SUPABASE_SECRET_KEY` | Credencial privilegiada do cliente Supabase server-side. |
-| `CONTACT_WEBHOOK_URL` | Destino opcional de notificação após persistir um lead. |
-| `CONTACT_WEBHOOK_TOKEN` | Bearer token opcional para notificação via webhook. |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | ID lido pelo provider legado de Google Analytics, que não é montado no layout público. |
 
 Nomes/usos foram conferidos no código. Valores, secrets e configuração de ambientes externos não são conhecidos. Não há `.env.example` no checkout auditado. Nunca registre valores secretos na documentação.

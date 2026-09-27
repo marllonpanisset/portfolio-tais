@@ -14,25 +14,25 @@ Na fundação, os módulos `config/client-site.ts` e `config/client-navigation.t
 - Next.js 16 App Router, React 19 e TypeScript 5.
 - Tailwind CSS 4, Framer Motion 11 e Lucide.
 - MDX configurado e usado pelo conteúdo editorial atual.
-- Supabase JS usado server-side para persistência de leads.
+- Supabase JS e cliente server-side mantidos para integrações futuras; sem uso de persistência pelo portfolio atual.
 
 ## Implementação atual
 
-- Rotas públicas principais para início, biografia, portfolio, contato e detalhe de trabalho, além de rotas legais herdadas. Rotas antigas de sobre, projetos, serviços, soluções e blog são redirecionadas. Permanecem handlers de sitemap, robots e API `POST /api/contato`.
+- Rotas públicas principais para início, biografia, portfolio, contato e detalhe de trabalho, além de rotas legais herdadas. Rotas antigas de sobre, projetos, serviços, soluções e blog são redirecionadas. Permanecem handlers de sitemap e robots. A página `/contato` é informativa e não tem formulário.
 - Componentes em `components/`, configuração em `config/`, conteúdo em `content/`, lógica em `lib/`, tipos em `types/` e migração em `supabase/migrations/`.
-- O formulário valida e sanitiza dados, mantém limites/deduplicação em memória, insere lead no Supabase e tenta notificação via webhook opcional.
+- O formulário, a API de contato e o fluxo de leads herdados foram removidos. A migration local de `public.leads` permanece no repositório, mas não é consumida pelo portfolio atual.
 - Analytics e consentimento continuam como código legado, mas não são montados no layout público nesta fase. Destino final ainda não decidido.
 - Rotas legadas de serviços, soluções, blog, sobre e projetos têm redirects para a experiência pública atual. Termos e política de privacidade continuam acessíveis com conteúdo Conjuga e exigem revisão própria antes da publicação.
-- Uma migração cria `public.leads`, constraints, índices e habilita RLS. Ela não declara policies.
+- A migration herdada `supabase/migrations/20260728213159_create_leads.sql` declara `public.leads`, constraints, índices e RLS, sem policies. Ela não foi alterada nesta etapa; estado remoto e aplicação da migration não foram verificados.
 - Não foi identificada implementação de CMS, Dashboard, autenticação de usuários da aplicação ou Storage do CMS.
 
 O conteúdo demonstrativo do portfolio não contém clientes ou créditos, mas ainda usa títulos e anos de exemplo e imagens externas; não deve ser tratado como portfólio real. As rotas legais herdadas ainda contêm conteúdo Conjuga e requerem decisão antes de publicação. O CMS e a persistência do portfolio ainda não existem.
 
 ## Configuração e limites conhecidos
 
-As referências de ambiente encontradas no código incluem `NEXT_PUBLIC_SITE_URL`, credenciais Supabase, webhook de contato e ID Google Analytics. Valores e ambientes não foram verificados. A URL do site recua para `http://localhost:3000` se `NEXT_PUBLIC_SITE_URL` não estiver configurada; domínio de produção não foi informado. Não foi encontrado `.env.example`.
+As referências de ambiente encontradas no código incluem `NEXT_PUBLIC_SITE_URL`, credenciais Supabase e ID Google Analytics. Valores e ambientes não foram verificados. A URL do site recua para `http://localhost:3000` se `NEXT_PUBLIC_SITE_URL` não estiver configurada; domínio de produção não foi informado. Não foi encontrado `.env.example`.
 
-A validação da aplicação aceita uma opção de serviço que não está na constraint SQL correspondente; o fluxo de leads herdado precisa de decisão antes de reutilização. Os controles em memória não coordenam instâncias. A presença de RLS na migration não confirma configuração remota nem policies hospedadas.
+A migration local de leads registra um modelo herdado que não é usado pelo portfolio atual. A presença de RLS nela não confirma configuração remota nem policies hospedadas.
 
 ## Verificações registradas
 

@@ -8,7 +8,7 @@ Portfolio profissional para Taís, em migração a partir de uma base técnica r
 - React
 - TypeScript
 - Tailwind CSS
-- Supabase JS, atualmente usado pelo fluxo de leads herdado
+- Supabase JS e cliente server-side mantidos para integrações futuras, ainda sem uso pelo portfolio
 - Framer Motion
 - Lucide
 - MDX, atualmente presente para conteúdo editorial herdado
@@ -35,9 +35,9 @@ app/          Rotas, layout, API, estilos e metadados
 components/   Componentes de interface, layout, seções, motion, analytics e SEO
 config/       Configuração específica do site cliente
 content/      Conteúdo TypeScript e MDX
-lib/          Utilitários, SEO, MDX, contato, leads e Supabase
+lib/          Utilitários, SEO, MDX e cliente Supabase
 types/        Tipos de conteúdo atuais
-supabase/     Migrações SQL versionadas
+supabase/     CLI local e migrações SQL versionadas; a migração herdada de leads permanece sem uso
 public/       Ativos estáticos
 docs/         Documentação do projeto e histórico migrado
 ```
