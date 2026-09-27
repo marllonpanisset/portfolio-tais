@@ -33,7 +33,7 @@ Scripts disponíveis no `package.json`: `dev`, `build`, `start`, `lint` e `analy
 ```text
 app/          Rotas, layout, API, estilos e metadados
 components/   Componentes de interface, layout, seções, motion, analytics e SEO
-config/       Configuração do site e navegação
+config/       Configuração específica do site cliente
 content/      Conteúdo TypeScript e MDX
 lib/          Utilitários, SEO, MDX, contato, leads e Supabase
 types/        Tipos de conteúdo atuais

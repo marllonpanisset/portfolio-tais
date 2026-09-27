@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { Container } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
-import { servicesNav, mainNav, type NavItem } from "@/config/navigation";
+import { servicesNav, mainNav, type NavItem } from "@/config/client-navigation";
 import { MobileNav } from "./MobileNav";
 import { cn } from "@/lib/utils";
 

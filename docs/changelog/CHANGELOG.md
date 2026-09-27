@@ -4,6 +4,13 @@ Alterações relevantes registradas em ordem cronológica inversa. Este históri
 
 ## [Unreleased]
 
+### Foundation
+
+- Adicionado o modelo TypeScript inicial de portfólio sem persistência ou operações de CMS.
+- Removidos componentes sem consumidores diretos e suas exportações dos barrels.
+- Renomeada a configuração para identificar responsabilidade do cliente e alinhado o nome do pacote com `portfolio-tais`.
+- Documentadas as fronteiras atuais entre candidatos ao CORE e configuração/conteúdo cliente ainda herdados.
+
 ### Documentation
 
 - Substituídas as instruções de agente e o README herdados por documentação do portfolio-tais e do CORE reutilizável.

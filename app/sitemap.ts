@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/client-site";
 import { services } from "@/content/servicos";
 import { caseStudies } from "@/content/projetos";
 import { getAllPostsMeta } from "@/lib/mdx";

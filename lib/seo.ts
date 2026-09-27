@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/client-site";
 
 interface BuildMetadataInput {
   title: string;

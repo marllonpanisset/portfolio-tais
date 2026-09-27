@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/client-site";
 
 /**
  * Generates robots.txt configuration.

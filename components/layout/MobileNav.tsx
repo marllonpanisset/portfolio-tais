@@ -13,7 +13,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
-import { servicesNav, mainNav } from "@/config/navigation";
+import { servicesNav, mainNav } from "@/config/client-navigation";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 

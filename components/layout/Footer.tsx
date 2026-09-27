@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui";
-import { footerNav } from "@/config/navigation";
-import { siteConfig } from "@/config/site";
+import { footerNav } from "@/config/client-navigation";
+import { siteConfig } from "@/config/client-site";
 
 function FooterColumn({
   id,

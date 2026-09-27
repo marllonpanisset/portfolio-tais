@@ -6,6 +6,8 @@
 
 O repositório contém a base técnica clonada do site institucional Conjuga e está sendo adaptado para `portfolio-tais`. A estratégia propõe um CORE reutilizável, mas a separação de código em pacotes ou diretórios CORE/cliente ainda não foi implementada. O site público continua em sua forma herdada; CMS e administração estão em planejamento.
 
+Na fundação, os módulos `config/client-site.ts` e `config/client-navigation.ts` passaram a identificar configuração de cliente; seus valores ainda são herdados e provisórios. O nome do pacote foi alinhado para `portfolio-tais`. Foi adicionado o modelo TypeScript inicial de portfólio (`types/portfolio.ts`) e removidos componentes sem consumidores diretos (`FeatureGrid`, `TestimonialBlock`, `FAQAccordion`, `StatsBlock`, `SlideIn`, `StaggerGroup` e `RevealOnScroll`). Conteúdo Conjuga permanece nas rotas existentes e aguarda a adaptação pública.
+
 ## Stack observada
 
 - Node.js `24.x` declarado em `package.json`.
@@ -33,7 +35,7 @@ A validação da aplicação aceita uma opção de serviço que não está na co
 
 ## Verificações registradas
 
-Na auditoria inicial, lint e `npx tsc --noEmit` terminaram sem erros. Não há script `test`. O build ficou inconclusivo, sem saída após iniciar a compilação, e foi interrompido; precisa de execução posterior bem-sucedida para confirmar o resultado. Esses resultados não substituem validação de alterações futuras.
+Na auditoria inicial, lint e `npx tsc --noEmit` terminaram sem erros. Nesta fundação, lint e `npx tsc --noEmit` passaram após a renomeação dos módulos de configuração. `git diff --check` também passou. Não há script `test`. O build não foi executado nesta fase; a última tentativa anterior ficou inconclusiva, sem saída após iniciar a compilação, e foi interrompida.
 
 ## Git e operação
 

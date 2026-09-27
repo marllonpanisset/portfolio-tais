@@ -4,7 +4,7 @@ import { PageWrapper } from "@/components/layout";
 import { Container, Section, Heading, Text } from "@/components/ui";
 import { Hero } from "@/components/sections";
 
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/client-site";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({

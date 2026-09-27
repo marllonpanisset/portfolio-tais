@@ -1,4 +1,4 @@
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/client-site";
 import { getPostMetaBySlug } from "@/lib/mdx";
 
 interface BreadcrumbItem {

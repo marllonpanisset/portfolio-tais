@@ -27,3 +27,9 @@ O código contém Supabase para persistência de leads, webhook HTTP configuráv
 ## Decisões
 
 Não há ADRs históricos; não é possível inferir a motivação histórica das escolhas. Decisões arquiteturais futuras devem seguir [`../decisions/README.md`](../decisions/README.md).
+
+## Fundação de portfólio
+
+`types/portfolio.ts` define tipos iniciais para categorias, projetos, mídia, ordenação e status `draft`/`published`. São tipos de domínio sem persistência. Os tipos herdados de serviços, estudos de caso e blog permanecem porque as rotas atuais ainda os importam.
+
+Componentes sem consumidores diretos foram removidos dos diretórios `components/sections/` e `components/motion/`, junto com suas exportações dos barrels. Os módulos de configuração foram renomeados para `config/client-site.ts` e `config/client-navigation.ts` para indicar a responsabilidade de cliente; os valores ainda são herdados e provisórios. Conteúdo e integrações herdadas permanecem enquanto houver consumidores; a adaptação pertence às etapas do site público/limpeza.
