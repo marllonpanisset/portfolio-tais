@@ -9,8 +9,4 @@ export const siteConfig = {
     name: "Taís",
     url: siteUrl,
   },
-  // Temporary data used only by the inherited legal page, still under review.
-  legacyLinks: {
-    email: "contato@conjuga.com.br",
-  },
 } as const;
