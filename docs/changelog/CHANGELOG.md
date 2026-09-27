@@ -4,6 +4,18 @@ Alterações relevantes registradas em ordem cronológica inversa. Este históri
 
 ## [Unreleased]
 
+### Public portfolio
+
+- Simplificado o menu para Home, Biografia, Portfólio e Contato, com links tipográficos equivalentes em desktop e mobile.
+- Criadas doze entradas temporárias de demonstração, galeria responsiva na Home com modal acessível, listagem editorial em `/portfolio` e detalhes com suporte a imagem e vídeo.
+- Alinhados os estilos públicos em preto e branco e atualizados sitemap, redirect de `/projetos` e documentação. Imagens e dados de demonstração precisam ser substituídos antes da publicação.
+
+### Public site
+
+- Adaptada a Home e criada a navegação pública de biografia, contato e detalhe de trabalho, com placeholders identificados e sem conteúdo profissional inventado.
+- Atualizados tema base, identidade textual, metadata, dados estruturados, sitemap e links principais; adicionados redirects para rotas comerciais herdadas.
+- Analytics/consentimento deixaram de ser montados no layout público enquanto sua adoção não for decidida. Código legado, endpoint de leads e páginas legais permanecem para revisão posterior.
+
 ### Foundation
 
 - Adicionado o modelo TypeScript inicial de portfólio sem persistência ou operações de CMS.

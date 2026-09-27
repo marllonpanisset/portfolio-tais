@@ -458,49 +458,19 @@ Consolidar:
 
 Não implementar CMS ainda.
 
-### FASE 3 — Modelo de dados
+### FASE 3 — Site público
 
-Definir entidades necessárias para o CMS.
+Construir primeiro a experiência pública e verificar quais padrões de conteúdo e apresentação realmente são necessários. A primeira implementação é estática, com dados aprovados e placeholders identificados. Esta fase antecede CMS e integração de dados.
 
-Começar pelo mínimo necessário:
+### FASE 4 — Modelo e CMS Core
 
-- `projects`
-- `categories`
-- `pages`
-- `media`
-- `contact_messages`
+Usar o domínio observado no portfolio público para decidir os modelos do CMS. Os candidatos iniciais continuam sendo `projects`, `categories`, `pages`, `media` e `contact_messages`; definir campos, IDs, slugs, status, relacionamentos, ordenação e publicação somente com justificativa. Não criar tabelas nesta fase sem uma decisão de persistência.
 
-Adicionar outras entidades somente quando justificadas.
+### FASE 5 — Supabase
 
-Definir:
+Depois de definir o modelo, decidir e implementar database, Auth, Storage, RLS, repositories, validação e tipos necessários. Não presumir que a migration de leads seja CMS.
 
-- IDs;
-- slugs;
-- timestamps;
-- status;
-- relacionamentos;
-- ordenação;
-- publicação;
-- RLS;
-- índices.
-
-Não criar tabelas desnecessárias.
-
-### FASE 4 — Supabase
-
-Implementar:
-
-- database;
-- Auth;
-- Storage;
-- RLS;
-- repositories;
-- validação;
-- tipos.
-
-Tudo deve ser preparado para reutilização.
-
-### FASE 5 — Admin/CMS
+### FASE 6 — Admin/CMS
 
 Implementar primeiro o shell:
 
@@ -529,19 +499,6 @@ Configurações
 ```
 
 O CMS deve ser utilizável por alguém que não precise editar código.
-
-### FASE 6 — Site público
-
-Adaptar:
-
-- Home
-- Biografia
-- Trabalhos
-- Contato
-
-Conectar o frontend ao CMS.
-
-O conteúdo público deve ser originado do modelo definido para o projeto.
 
 ### FASE 7 — Limpeza
 
@@ -672,13 +629,13 @@ A partir deste documento, a sequência é:
         ↓
 03-FOUNDATION
         ↓
-04-CMS-CORE
+04-PUBLIC-SITE
         ↓
-05-SUPABASE
+05-CMS-CORE
         ↓
-06-ADMIN
+06-SUPABASE
         ↓
-07-PUBLIC-SITE
+07-ADMIN
         ↓
 08-CLEANUP
         ↓

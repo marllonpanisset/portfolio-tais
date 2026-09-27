@@ -14,18 +14,33 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: "/servicos/landing-pages",
-        destination: "/servicos/presenca-digital",
+        source: "/sobre",
+        destination: "/biografia",
         permanent: true,
       },
       {
-        source: "/servicos/sites-institucionais",
-        destination: "/servicos/presenca-digital",
+        source: "/projetos",
+        destination: "/portfolio",
         permanent: true,
       },
       {
-        source: "/servicos/automacoes-integracoes",
-        destination: "/servicos/automacao",
+        source: "/projetos/:slug",
+        destination: "/trabalhos/:slug",
+        permanent: true,
+      },
+      {
+        source: "/servicos/:path*",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/solucoes/:path*",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/blog/:path*",
+        destination: "/",
         permanent: true,
       },
     ];

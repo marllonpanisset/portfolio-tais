@@ -22,25 +22,16 @@ interface ArticleSchemaInput {
 const absoluteUrl = (path: string) =>
   new URL(path, siteConfig.url).toString();
 
-const organizationId = absoluteUrl("/#organization");
+const personId = absoluteUrl("/#person");
 const websiteId = absoluteUrl("/#website");
 
-export function organizationJsonLd() {
+export function personJsonLd() {
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": organizationId,
-    name: siteConfig.name,
+    "@type": "Person",
+    "@id": personId,
+    name: siteConfig.author.name,
     url: absoluteUrl("/"),
-    description: siteConfig.description,
-    email: siteConfig.contact.email,
-    sameAs: [...siteConfig.sameAs],
-    knowsAbout: [
-      "Sistemas Web",
-      "Automações e Integrações",
-      "Inteligência Artificial Aplicada",
-      "Presença Digital",
-    ],
   };
 }
 
@@ -54,7 +45,7 @@ export function websiteJsonLd() {
     description: siteConfig.description,
     inLanguage: siteConfig.locale,
     publisher: {
-      "@id": organizationId,
+      "@id": personId,
     },
   };
 }
@@ -77,7 +68,7 @@ export function serviceJsonLd({
       "@id": url,
     },
     provider: {
-      "@id": organizationId,
+      "@id": personId,
     },
   };
 }
@@ -107,13 +98,13 @@ export function articleJsonLd({
       "@id": url,
     },
     author: {
-      "@type": "Organization",
-      "@id": organizationId,
+      "@type": "Person",
+      "@id": personId,
       name: siteConfig.author.name,
       url: siteConfig.author.url,
     },
     publisher: {
-      "@id": organizationId,
+      "@id": personId,
     },
   };
 }

@@ -39,10 +39,10 @@ Atualmente, `config/client-site.ts` e `config/client-navigation.ts` identificam 
 
 | Caminho | Responsabilidade verificada |
 | --- | --- |
-| `app/` | Rotas App Router, layouts, API, estilos, sitemap e robots. |
-| `components/` | Componentes UI, layout, seções, motion, analytics e SEO. |
+| `app/` | Rotas App Router, layouts, API herdada, estilos, sitemap e robots. |
+| `components/` | Componentes UI, layout, seções, motion e SEO; providers antigos de analytics não são montados no layout público. |
 | `config/` | Configuração específica do site cliente (`client-site.ts`, `client-navigation.ts`). |
-| `content/` | Dados TypeScript de serviços/projetos e artigo MDX. |
+| `content/` | Categorias e projetos demonstrativos do portfolio, além de conteúdo herdado de serviços/projetos e artigo MDX. |
 | `lib/` | Utilitários, SEO, MDX, contato, leads e cliente Supabase server-side. |
 | `types/` | Tipos atuais para serviços, projetos e artigos; inclui a forma inicial do domínio de portfólio em `portfolio.ts`. |
 | `supabase/migrations/` | Migração SQL atual para a tabela `leads`. |
@@ -50,6 +50,10 @@ Atualmente, `config/client-site.ts` e `config/client-navigation.ts` identificam 
 | `docs/` | Documentação técnica, contrato CMS, prompts e histórico/arquivo. |
 
 Esta é a estrutura existente, não uma afirmação de que todos esses módulos permanecerão no projeto final.
+
+As páginas públicas principais são `/`, `/biografia`, `/portfolio` e `/contato`; `/trabalhos/[slug]` é o detalhe interno de cada projeto. Home e Portfólio usam dados e imagens temporários demonstrativos de `picsum.photos`, identificados como tal no conteúdo. Biografia e contato seguem sem dados pessoais inventados. Rotas antigas de serviços, soluções, blog e sobre redirecionam para o novo site; páginas legais permanecem fora do menu e precisam de revisão própria.
+
+O domínio de conteúdo em `content/portfolio.ts` contém as duas categorias aprovadas e uma coleção temporária de doze projetos demonstrativos, com três imagens por projeto. Esses itens servem somente à validação visual e devem ser substituídos por material aprovado.
 
 O domínio TypeScript em `types/portfolio.ts` descreve categorias, projetos, mídia, ordem e status de publicação como tipos, sem persistência ou CRUD. `types/service.ts` e `types/case-study.ts` continuam atendendo as rotas herdadas.
 
@@ -60,7 +64,7 @@ O domínio TypeScript em `types/portfolio.ts` descreve categorias, projetos, mí
 - Componentes sem consumidores (`FeatureGrid`, `TestimonialBlock`, `FAQAccordion`, `StatsBlock`, `SlideIn`, `StaggerGroup`, `RevealOnScroll`) foram removidos junto de suas exportações.
 - Nenhuma dependência foi removida ou atualizada. Supabase continua usado por leads; MDX por rotas/conteúdo atuais; Framer Motion e `@next/third-parties` por motion e analytics.
 
-`config/client-site.ts` e `config/client-navigation.ts` deixam explícita a fronteira de configuração cliente. Seus valores ainda não são os dados aprovados de Taís. Analytics, webhook e Supabase permanecem provisórios enquanto seus consumidores existirem; a decisão de destino é posterior.
+`config/client-site.ts` e `config/client-navigation.ts` identificam a configuração cliente, agora ajustada ao portfolio. A URL usa `NEXT_PUBLIC_SITE_URL` e recua para localhost durante desenvolvimento; domínio de produção não foi informado. Arquivos de analytics/consentimento e endpoint de leads permanecem no repositório, mas analytics/cookies não são carregados pelo layout público e o formulário herdado deixou de ser exibido. A migração do endpoint/Supabase e os documentos legais precisam de decisão em fase posterior.
 
 ## Evolução
 

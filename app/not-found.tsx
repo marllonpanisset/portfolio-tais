@@ -8,8 +8,7 @@ import { Text } from "@/components/ui/Text";
 
 export const metadata: Metadata = {
   title: "Página não encontrada",
-  description:
-    "A página acessada não foi encontrada no site institucional da Conjuga.",
+  description: "A página solicitada não foi encontrada.",
   robots: {
     index: false,
     follow: false,

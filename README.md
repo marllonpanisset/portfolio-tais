@@ -44,7 +44,7 @@ docs/         Documentação do projeto e histórico migrado
 
 ## Arquitetura
 
-O objetivo é separar infraestrutura reutilizável (**CORE**) da identidade e configuração do **CLIENTE**, do **CONTEÚDO** e dos **DADOS**. O CORE não deve conhecer a identidade específica de Taís. A arquitetura CMS ainda está sendo construída, e o site público ainda está sendo adaptado.
+O objetivo é separar infraestrutura reutilizável (**CORE**) da identidade e configuração do **CLIENTE**, do **CONTEÚDO** e dos **DADOS**. O CORE não deve conhecer a identidade específica de Taís. O CMS ainda não está implementado.
 
 ## Documentação
 
@@ -54,3 +54,7 @@ O objetivo é separar infraestrutura reutilizável (**CORE**) da identidade e co
 - [Prompts de migração](docs/prompts/)
 
 A migração está em andamento. Os documentos descrevem separadamente o estado implementado e os requisitos futuros; páginas administrativas, CMS, Auth e Storage não devem ser considerados concluídos.
+
+## Estado público
+
+O site público tem as páginas Home, Biografia, Portfólio e Contato, além dos detalhes `/trabalhos/[slug]`. A Home e o Portfólio usam projetos e imagens externos demonstrativos para validar o layout; substitua-os por material aprovado antes de publicar. Nenhum CMS está conectado.

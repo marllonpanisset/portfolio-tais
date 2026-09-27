@@ -194,10 +194,10 @@ const sections = [
         Em caso de dúvidas sobre esta Política de Privacidade ou sobre o
         tratamento de dados pessoais, entre em contato pelo e-mail{" "}
         <a
-          href={`mailto:${siteConfig.links.email}`}
+          href={`mailto:${siteConfig.legacyLinks.email}`}
           className="link-underline text-signal-strong"
         >
-          {siteConfig.links.email}
+          {siteConfig.legacyLinks.email}
         </a>
         .
       </Text>

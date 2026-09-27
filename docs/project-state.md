@@ -1,12 +1,12 @@
 # Estado atual do projeto
 
-Última verificação documental: 2026-09-26. Baseado na auditoria da migração e no checkout disponível nesta etapa. Informações externas são identificadas como não verificáveis localmente.
+Última verificação documental: 2026-09-27. Baseado na auditoria da migração e no checkout disponível nesta etapa. Informações externas são identificadas como não verificáveis localmente.
 
 ## Projeto e migração
 
 O repositório contém a base técnica clonada do site institucional Conjuga e está sendo adaptado para `portfolio-tais`. A estratégia propõe um CORE reutilizável, mas a separação de código em pacotes ou diretórios CORE/cliente ainda não foi implementada. O site público continua em sua forma herdada; CMS e administração estão em planejamento.
 
-Na fundação, os módulos `config/client-site.ts` e `config/client-navigation.ts` passaram a identificar configuração de cliente; seus valores ainda são herdados e provisórios. O nome do pacote foi alinhado para `portfolio-tais`. Foi adicionado o modelo TypeScript inicial de portfólio (`types/portfolio.ts`) e removidos componentes sem consumidores diretos (`FeatureGrid`, `TestimonialBlock`, `FAQAccordion`, `StatsBlock`, `SlideIn`, `StaggerGroup` e `RevealOnScroll`). Conteúdo Conjuga permanece nas rotas existentes e aguarda a adaptação pública.
+Na fundação, os módulos `config/client-site.ts` e `config/client-navigation.ts` passaram a identificar configuração de cliente; o nome do pacote foi alinhado para `portfolio-tais`. Foi adicionado `types/portfolio.ts` e removidos componentes sem consumidores diretos. A Home, biografia, contato, navegação, metadata, SEO estrutural, sitemap e tokens visuais foram adaptados ao portfolio. A Home exibe doze projetos demonstrativos com imagens temporárias de `picsum.photos`; `content/portfolio.ts` inclui três imagens por projeto para validar o detalhe. Substituir esses dados e URLs por material aprovado antes da publicação. Biografia e contatos seguem placeholders sem dados inventados. A paleta é preto e branco; nenhum ativo herdado de marca é usado pelo layout público.
 
 ## Stack observada
 
@@ -18,24 +18,25 @@ Na fundação, os módulos `config/client-site.ts` e `config/client-navigation.t
 
 ## Implementação atual
 
-- Rotas herdadas de marketing, contato, serviços, projetos, soluções, políticas legais e blog; handlers de sitemap, robots e API `POST /api/contato`.
+- Rotas públicas principais para início, biografia, portfolio, contato e detalhe de trabalho, além de rotas legais herdadas. Rotas antigas de sobre, projetos, serviços, soluções e blog são redirecionadas. Permanecem handlers de sitemap, robots e API `POST /api/contato`.
 - Componentes em `components/`, configuração em `config/`, conteúdo em `content/`, lógica em `lib/`, tipos em `types/` e migração em `supabase/migrations/`.
 - O formulário valida e sanitiza dados, mantém limites/deduplicação em memória, insere lead no Supabase e tenta notificação via webhook opcional.
-- Analytics e consentimento de cookies têm implementação frontend.
+- Analytics e consentimento continuam como código legado, mas não são montados no layout público nesta fase. Destino final ainda não decidido.
+- Rotas legadas de serviços, soluções, blog, sobre e projetos têm redirects para a experiência pública atual. Termos e política de privacidade continuam acessíveis com conteúdo Conjuga e exigem revisão própria antes da publicação.
 - Uma migração cria `public.leads`, constraints, índices e habilita RLS. Ela não declara policies.
 - Não foi identificada implementação de CMS, Dashboard, autenticação de usuários da aplicação ou Storage do CMS.
 
-As rotas e conteúdos atuais ainda refletem a Conjuga. O mapa público pretendido e os modelos editoriais futuros estão em [`prompts/00-MIGRATION-STRATEGY.md`](prompts/00-MIGRATION-STRATEGY.md), como direção, não comportamento implementado.
+O conteúdo demonstrativo do portfolio não contém clientes ou créditos, mas ainda usa títulos e anos de exemplo e imagens externas; não deve ser tratado como portfólio real. As rotas legais herdadas ainda contêm conteúdo Conjuga e requerem decisão antes de publicação. O CMS e a persistência do portfolio ainda não existem.
 
 ## Configuração e limites conhecidos
 
-As referências de ambiente encontradas são `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `CONTACT_WEBHOOK_URL`, `CONTACT_WEBHOOK_TOKEN` e `NEXT_PUBLIC_GA_MEASUREMENT_ID`. Os valores e ambientes em que possam estar configurados não foram verificados. Não foi encontrado `.env.example`.
+As referências de ambiente encontradas no código incluem `NEXT_PUBLIC_SITE_URL`, credenciais Supabase, webhook de contato e ID Google Analytics. Valores e ambientes não foram verificados. A URL do site recua para `http://localhost:3000` se `NEXT_PUBLIC_SITE_URL` não estiver configurada; domínio de produção não foi informado. Não foi encontrado `.env.example`.
 
 A validação da aplicação aceita uma opção de serviço que não está na constraint SQL correspondente; o fluxo de leads herdado precisa de decisão antes de reutilização. Os controles em memória não coordenam instâncias. A presença de RLS na migration não confirma configuração remota nem policies hospedadas.
 
 ## Verificações registradas
 
-Na auditoria inicial, lint e `npx tsc --noEmit` terminaram sem erros. Nesta fundação, lint e `npx tsc --noEmit` passaram após a renomeação dos módulos de configuração. `git diff --check` também passou. Não há script `test`. O build não foi executado nesta fase; a última tentativa anterior ficou inconclusiva, sem saída após iniciar a compilação, e foi interrompida.
+Na auditoria inicial, lint e `npx tsc --noEmit` terminaram sem erros. Na fundação, lint e typecheck passaram após regenerar os tipos de rota com `npx next typegen`. Em 2026-09-27, os ajustes da galeria pública passaram em lint, `npx tsc --noEmit` e `git diff --check`, após regenerar os tipos de rota. Não há script `test`. O build da etapa pública anterior permaneceu sem saída após iniciar compilação, sem processo Node ativo visível, e foi interrompido; resultado inconclusivo. Não há navegador instalado no ambiente para capturar visualmente os viewports solicitados.
 
 ## Git e operação
 

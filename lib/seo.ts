@@ -29,17 +29,9 @@ export function buildMetadata({
     path === "/"
       ? `${siteConfig.name} — ${title}`
       : `${title} — ${siteConfig.name}`;
-  const images = [
-    {
-      url: new URL(
-        image ?? siteConfig.openGraphImage.path,
-        siteConfig.url,
-      ).toString(),
-      width: siteConfig.openGraphImage.width,
-      height: siteConfig.openGraphImage.height,
-      alt: image ? title : siteConfig.openGraphImage.alt,
-    },
-  ];
+  const images = image
+    ? [new URL(image, siteConfig.url).toString()]
+    : undefined;
 
   return {
     title: path === "/" ? { absolute: resolvedTitle } : title,
@@ -58,14 +50,14 @@ export function buildMetadata({
       locale: siteConfig.locale.replace("-", "_"),
       type,
       ...(type === "article" && publishedTime ? { publishedTime } : {}),
-      images,
+      ...(images ? { images } : {}),
     },
 
     twitter: {
       card: "summary_large_image",
       title: resolvedTitle,
       description,
-      images: images.map(({ url: imageUrl }) => imageUrl),
+      ...(images ? { images } : {}),
     },
   };
 }

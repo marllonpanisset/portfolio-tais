@@ -10,7 +10,7 @@ interface FadeInProps {
 }
 
 /**
- * Animação de entrada padrão da Conjuga: fade + leve deslocamento vertical.
+ * Animação de entrada leve para revelar conteúdo sem deslocamento excessivo.
  * Duração e easing fixos para manter consistência em todo o site.
  * Framer Motion já respeita `prefers-reduced-motion` via useReducedMotion internamente
  * quando combinado com a configuração global — aqui mantemos o deslocamento discreto (12px).

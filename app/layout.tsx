@@ -1,22 +1,14 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { CookieBanner } from "@/components/analytics/CookieBanner";
-import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/config/client-site";
-import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
+import { personJsonLd, websiteJsonLd } from "@/lib/structured-data";
 import "./globals.css";
 
-const defaultSocialImage = {
-  url: new URL(siteConfig.openGraphImage.path, siteConfig.url).toString(),
-  width: siteConfig.openGraphImage.width,
-  height: siteConfig.openGraphImage.height,
-  alt: siteConfig.openGraphImage.alt,
-};
-const defaultTitle = `${siteConfig.name} — Engenharia de software para empresas de serviços`;
+const defaultTitle = `${siteConfig.name} — Portfólio profissional`;
 
 /**
  * Global metadata provides default SEO information for all routes.
@@ -36,8 +28,6 @@ export const metadata: Metadata = {
 
   description: siteConfig.description,
 
-  keywords: [...siteConfig.keywords],
-
   authors: [
     {
       name: siteConfig.author.name,
@@ -47,34 +37,7 @@ export const metadata: Metadata = {
 
   creator: siteConfig.author.name,
 
-  publisher: siteConfig.legalName,
-
-  category: "technology",
-
-  icons: {
-    icon: [
-      {
-        url: "/favicon.ico",
-        sizes: "any",
-      },
-      {
-        url: "/favicon-32x32.png",
-        type: "image/png",
-        sizes: "32x32",
-      },
-      {
-        url: "/favicon-16x16.png",
-        type: "image/png",
-        sizes: "16x16",
-      },
-    ],
-    apple: [
-      {
-        url: "/apple-touch-icon.png",
-        sizes: "180x180",
-      },
-    ],
-  },
+  publisher: siteConfig.name,
 
   formatDetection: {
     address: false,
@@ -101,14 +64,12 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     locale: siteConfig.locale.replace("-", "_"),
     siteName: siteConfig.name,
-    images: [defaultSocialImage],
   },
 
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: defaultTitle,
     description: siteConfig.description,
-    images: [defaultSocialImage.url],
   },
 };
 
@@ -170,7 +131,7 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>
-        <JsonLd data={organizationJsonLd()} />
+        <JsonLd data={personJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
 
         <MotionProvider>
@@ -179,8 +140,6 @@ export default function RootLayout({
           <Footer />
         </MotionProvider>
 
-        <CookieBanner />
-        <AnalyticsProvider />
       </body>
     </html>
   );
