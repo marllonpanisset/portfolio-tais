@@ -1,12 +1,13 @@
 # Desenvolvimento e validação
 
-## Requisitos verificados
+## Requisitos observados
 
-- Node.js `24.x`, conforme `engines` em `package.json`.
-- npm e dependências descritas em `package-lock.json`.
-- Variáveis para funcionalidades integradas: `NEXT_PUBLIC_SUPABASE_URL` e `SUPABASE_SECRET_KEY` para acesso à persistência; `CONTACT_WEBHOOK_URL` e opcionalmente `CONTACT_WEBHOOK_TOKEN` para notificação; `NEXT_PUBLIC_GA_MEASUREMENT_ID` para analytics. Os valores devem ser fornecidos pelo ambiente e nunca versionados.
+- Node.js `24.x`, declarado em `package.json`.
+- npm e dependências registradas em `package-lock.json`.
 
-## Comandos disponíveis
+## Scripts disponíveis
+
+Os scripts verificados em `package.json` são:
 
 ```bash
 npm install
@@ -14,29 +15,31 @@ npm run dev
 npm run lint
 npm run build
 npm start
+npm run analyze
 ```
 
-O servidor de desenvolvimento padrão do Next.js atende em `http://localhost:3000`. `npm run start` serve o build de produção e deve ser precedido por `npm run build`.
+`npm run start` serve o build de produção e deve ser precedido por `npm run build`. O servidor de desenvolvimento padrão atende em `http://localhost:3000`.
 
-Os scripts declarados não incluem testes automatizados nem typecheck isolado. Não há configuração de CI identificada no checkout auditado.
+Não há scripts `typecheck` ou `test` declarados. `npx tsc --noEmit` foi executado na auditoria inicial e passou; verifique o estado atual antes de usar como validação de alterações. Não foi identificada configuração de CI no checkout auditado.
 
-## Fluxo recomendado
+## Configuração de ambiente observada
 
-1. Leia `AGENTS.md`, este guia e os documentos canônicos relevantes.
-2. Inspecione a rota, componentes e dependências que serão alterados.
-3. Faça uma mudança focada, preservando padrões existentes e sem incluir segredos.
-4. Para alterações de schema, crie uma nova migração em `supabase/migrations/`; inspecione constraints e RLS antes de definir acesso.
-5. Atualize documentação técnica, estado do projeto e changelog quando a mudança for relevante; registre um ADR para decisões arquiteturais significativas.
-6. Execute lint, build e `git diff --check` para alterações de implementação; revise status e diff antes de concluir.
+| Variável | Uso no código atual |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Inicialização do cliente Supabase server-side. |
+| `SUPABASE_SECRET_KEY` | Credencial privilegiada do cliente Supabase server-side. |
+| `CONTACT_WEBHOOK_URL` | Destino opcional de notificação após persistir um lead. |
+| `CONTACT_WEBHOOK_TOKEN` | Bearer token opcional para notificação via webhook. |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | ID lido pelo provider de Google Analytics. |
 
-## Variáveis de ambiente
+Nomes/usos foram conferidos no código. Valores, secrets e configuração de ambientes externos não são conhecidos. Não há `.env.example` no checkout auditado. Nunca registre valores secretos na documentação.
 
-| Variável | Uso observado | Obrigatória |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | URL utilizada pelo cliente Supabase server-side. | Sim para inicializar persistência. |
-| `SUPABASE_SECRET_KEY` | Credencial privilegiada do cliente Supabase server-side. | Sim para inicializar persistência. |
-| `CONTACT_WEBHOOK_URL` | Destino opcional de notificação após persistir lead. | Não para persistência; sem ela não há entrega de notificação. |
-| `CONTACT_WEBHOOK_TOKEN` | Bearer token opcional para webhook. | Não. |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Identificador consultado pela implementação de analytics. | Não indicado pelo código como obrigatório. |
+## Procedimento de mudança
 
-Não existe arquivo `.env.example` no checkout auditado. Nomes e usos acima foram conferidos no código; valores e configuração dos ambientes não são conhecidos.
+1. Leia `AGENTS.md` e a documentação relevante em `docs/`.
+2. Inspecione o código e dependências afetadas.
+3. Mantenha a alteração no escopo autorizado e não antecipe fases futuras.
+4. Atualize documentação técnica quando o comportamento ou arquitetura verificados mudarem.
+5. Verifique `package.json` e execute os checks existentes e aplicáveis. Para implementação, confira também status e diff.
+
+Para mudanças futuras de schema, inspecione constraints e RLS antes de planejar; qualquer alteração deverá seguir a autorização e o escopo da tarefa correspondente.

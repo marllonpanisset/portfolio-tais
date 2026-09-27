@@ -1,118 +1,56 @@
-# Conjuga
+# Portfolio Taís
 
-Site institucional da **Conjuga**, desenvolvido com foco em performance, acessibilidade, SEO e experiência do usuário.
+Portfolio profissional para Taís, em migração a partir de uma base técnica reutilizável da Conjuga. A identidade e o conteúdo do portfolio devem usar somente informações aprovadas; este README não presume biografia ou dados profissionais.
 
-## 🚀 Tecnologias
+## Stack atual
 
-- Next.js
+- Next.js App Router
 - React
 - TypeScript
 - Tailwind CSS
+- Supabase JS, atualmente usado pelo fluxo de leads herdado
 - Framer Motion
+- Lucide
+- MDX, atualmente presente para conteúdo editorial herdado
 
----
+CMS, autenticação da aplicação e Storage para o CMS ainda não estão implementados.
 
-# 📁 Estrutura do Projeto
+## Executar localmente
 
-```text
-.
-├── app/              Rotas da aplicação (App Router)
-├── components/       Componentes reutilizáveis
-├── content/          Conteúdo estruturado do site
-├── docs/             Documentação estratégica e técnica do projeto
-├── lib/              Utilitários
-├── public/           Arquivos estáticos
-├── styles/           Estilos globais
-├── AGENTS.md         Guia para agentes de IA
-└── README.md
-```
-
----
-
-# 📚 Documentação
-
-Antes de realizar mudanças significativas, consulte a documentação do projeto. O código é a referência do comportamento implementado; os documentos canônicos definem as regras de negócio e posicionamento aprovadas.
-
-A leitura recomendada é:
-
-```text
-docs/
-├── 01-BUSINESS.md      Modelo de negócio
-├── 02-PRINCIPLES.md    Princípios da empresa
-├── 03-BRAND.md         Identidade da marca
-├── 04-WEBSITE.md       Arquitetura do site
-├── 05-COPY.md          Comunicação institucional
-├── 06-ROADMAP.md       Evolução estratégica
-├── README.md           Índice documental
-├── project-state.md    Estado verificado da implementação
-├── architecture/       Arquitetura técnica
-├── development/        Instruções de desenvolvimento
-├── decisions/          Registros de decisões (ADRs)
-├── changelog/          Histórico de mudanças
-└── releases/           Notas relacionadas a tags de versão
-```
-
-O arquivo **AGENTS.md** serve como ponto de entrada para agentes de Inteligência Artificial e referencia toda a documentação oficial do projeto.
-
-Toda decisão de negócio, produto, design ou comunicação deve estar alinhada com esses documentos.
-
----
-
-# 💻 Desenvolvimento
-
-Instale as dependências:
+Requer Node.js `24.x` conforme `package.json`.
 
 ```bash
 npm install
-```
-
-Execute o projeto:
-
-```bash
 npm run dev
 ```
 
-Acesse:
+O servidor de desenvolvimento padrão fica em `http://localhost:3000`.
+
+Scripts disponíveis no `package.json`: `dev`, `build`, `start`, `lint` e `analyze`. Não há scripts `typecheck` ou `test` declarados.
+
+## Estrutura atual
 
 ```text
-http://localhost:3000
+app/          Rotas, layout, API, estilos e metadados
+components/   Componentes de interface, layout, seções, motion, analytics e SEO
+config/       Configuração do site e navegação
+content/      Conteúdo TypeScript e MDX
+lib/          Utilitários, SEO, MDX, contato, leads e Supabase
+types/        Tipos de conteúdo atuais
+supabase/     Migrações SQL versionadas
+public/       Ativos estáticos
+docs/         Documentação do projeto e histórico migrado
 ```
 
----
+## Arquitetura
 
-# 📦 Build
+O objetivo é separar infraestrutura reutilizável (**CORE**) da identidade e configuração do **CLIENTE**, do **CONTEÚDO** e dos **DADOS**. O CORE não deve conhecer a identidade específica de Taís. A arquitetura CMS ainda está sendo construída, e o site público ainda está sendo adaptado.
 
-Gerar a versão de produção:
+## Documentação
 
-```bash
-npm run build
-```
+- [Arquitetura](docs/ARCHITECTURE.md)
+- [Contrato inicial do CMS](docs/CMS.md)
+- [Índice da documentação](docs/README.md)
+- [Prompts de migração](docs/prompts/)
 
-Executar em produção:
-
-```bash
-npm start
-```
-
----
-
-# 🧭 Princípios do Projeto
-
-Este projeto adota uma abordagem **Documentation First** para decisões de negócio e operação. Código e configurações são a fonte para confirmar o que está implementado.
-
-Antes de implementar funcionalidades:
-
-- consulte a documentação correspondente;
-- evite duplicar regras ou decisões;
-- mantenha cada tipo de informação em sua fonte apropriada;
-- atualize a documentação quando houver mudanças relevantes.
-
-Consulte [`docs/README.md`](docs/README.md) para o índice documental e [`AGENTS.md`](AGENTS.md) para o fluxo permanente de trabalho.
-
----
-
-# 📄 Licença
-
-Projeto proprietário.
-
-Todos os direitos reservados.
+A migração está em andamento. Os documentos descrevem separadamente o estado implementado e os requisitos futuros; páginas administrativas, CMS, Auth e Storage não devem ser considerados concluídos.

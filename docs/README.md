@@ -1,27 +1,20 @@
-# Documentação do projeto
+# Documentação
 
-Este diretório reúne os documentos estratégicos existentes e a documentação técnica do site. O código descreve o comportamento implementado; os documentos canônicos de negócio definem as regras aprovadas para a empresa e sua comunicação.
+Esta documentação distingue o estado implementado dos contratos e planos futuros. A documentação herdada do Conjuga foi arquivada e não é especificação de conteúdo ou identidade de Taís.
 
-## Por onde começar
+## Documentos atuais
 
-- [`project-state.md`](project-state.md): estado verificado do repositório e da aplicação.
-- [`architecture/overview.md`](architecture/overview.md): stack, estrutura, rotas, integrações, dados e limites conhecidos.
-- [`development/setup.md`](development/setup.md): requisitos e comandos confirmados para desenvolvimento e validação.
-- [`changelog/CHANGELOG.md`](changelog/CHANGELOG.md): histórico de alterações documentadas.
-- [`decisions/README.md`](decisions/README.md): política e índice de ADRs.
-- [`releases/README.md`](releases/README.md): relação entre tags e notas de release.
-
-## Documentos canônicos
-
-- [`01-BUSINESS.md`](01-BUSINESS.md): modelo de negócio.
-- [`02-PRINCIPLES.md`](02-PRINCIPLES.md): princípios da empresa e engenharia.
-- [`03-BRAND.md`](03-BRAND.md): identidade da marca.
-- [`04-WEBSITE.md`](04-WEBSITE.md): arquitetura e estrutura do site.
-- [`05-COPY.md`](05-COPY.md): comunicação institucional.
-- [`06-ROADMAP.md`](06-ROADMAP.md): evolução estratégica.
-
-Consulte também [`../AGENTS.md`](../AGENTS.md), que define o fluxo permanente de trabalho e as regras para agentes.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md): separação pretendida entre CORE, cliente, conteúdo e dados, mais estrutura atualmente verificada.
+- [`CMS.md`](CMS.md): contrato conceitual inicial do CMS; não descreve implementação.
+- [`project-state.md`](project-state.md): estado verificado do checkout e limites conhecidos.
+- [`architecture/overview.md`](architecture/overview.md): detalhes técnicos observados na base existente.
+- [`development/setup.md`](development/setup.md): requisitos, scripts e configuração observados.
+- [`decisions/README.md`](decisions/README.md): convenções para ADRs.
+- [`changelog/CHANGELOG.md`](changelog/CHANGELOG.md): alterações documentadas.
+- [`releases/README.md`](releases/README.md): relação entre notas de release e tags existentes.
+- [`prompts/`](prompts/): estratégia de migração e materiais de auditoria disponíveis.
+- [`_legacy-conjuga/`](./_legacy-conjuga/): documentos históricos específicos da Conjuga, arquivados e fora da autoridade deste projeto.
 
 ## Manutenção
 
-Ao alterar comportamento, arquitetura, integrações, dados ou procedimentos, confira o código e atualize os documentos técnicos afetados, o estado do projeto e o changelog. Registre ADR apenas para decisões arquiteturais significativas. Não apresente planos, configurações ausentes ou hipóteses como fatos implementados.
+Ao alterar implementação, atualize os documentos técnicos afetados para refletir comportamento verificado. Registre decisões arquiteturais significativas quando forem efetivamente tomadas; não transforme planos ou hipóteses em fatos implementados.
