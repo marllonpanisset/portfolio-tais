@@ -20,7 +20,7 @@ Há uma migration que cria `public.leads`, constraints e índices e habilita RLS
 
 ## Integrações
 
-O código mantém o cliente Supabase para uso futuro e Google Analytics condicionado a `NEXT_PUBLIC_GA_MEASUREMENT_ID`. A configuração efetiva de qualquer ambiente não é verificável neste checkout. Não foi identificado provedor dedicado de e-mail/CRM.
+O código mantém o cliente Supabase para uso futuro. A configuração efetiva de qualquer ambiente não é verificável neste checkout. Não foi identificado provedor dedicado de e-mail/CRM.
 
 ## Decisões
 

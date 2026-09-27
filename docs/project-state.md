@@ -30,7 +30,7 @@ O conteúdo demonstrativo do portfolio não contém clientes ou créditos, mas a
 
 ## Configuração e limites conhecidos
 
-As referências de ambiente encontradas no código incluem `NEXT_PUBLIC_SITE_URL`, credenciais Supabase e ID Google Analytics. Valores e ambientes não foram verificados. A URL do site recua para `http://localhost:3000` se `NEXT_PUBLIC_SITE_URL` não estiver configurada; domínio de produção não foi informado. Não foi encontrado `.env.example`.
+As referências de ambiente encontradas no código incluem `NEXT_PUBLIC_SITE_URL` e credenciais Supabase. Valores e ambientes não foram verificados. A URL do site recua para `http://localhost:3000` se `NEXT_PUBLIC_SITE_URL` não estiver configurada; domínio de produção não foi informado. Não foi encontrado `.env.example`.
 
 A migration local de leads registra um modelo herdado que não é usado pelo portfolio atual. A presença de RLS nela não confirma configuração remota nem policies hospedadas.
 

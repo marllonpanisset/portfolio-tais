@@ -54,7 +54,6 @@ Base Next.js App Router em TypeScript e React, com Tailwind, componentes UI, con
 | `SUPABASE_SECRET_KEY` | `lib/supabase/server.ts` | Credencial privilegiada server-side | INVESTIGAR |
 | `CONTACT_WEBHOOK_URL` | `app/api/contato/contact-delivery.ts` | Destino opcional de notificação | ADAPTAR |
 | `CONTACT_WEBHOOK_TOKEN` | `app/api/contato/contact-delivery.ts` | Token opcional do webhook | INVESTIGAR |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | `components/analytics/AnalyticsProvider.tsx` | ID do Google Analytics | INVESTIGAR |
 
 Valores de ambiente não foram verificados nem registrados.
 
