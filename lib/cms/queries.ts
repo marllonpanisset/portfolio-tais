@@ -160,14 +160,8 @@ export async function listFeaturedProjects(): Promise<
 /**
  * List all projects, including drafts.
  *
- * RLS LIMITATION: Current RLS policies only allow reading published projects.
- * This query will return only published projects until a policy like
- * "Admin read all projects" is added:
- *
- *   CREATE POLICY "Admin read all projects"
- *     ON public.projects
- *     FOR SELECT
- *     USING (true);  -- or auth.role() = 'authenticated'
+ * REQUIRES: User must be authenticated (CMS 05 policy:
+ * "Authenticated read all projects").
  */
 export async function listAllProjects(): Promise<QueryResult<ProjectRow[]>> {
   const supabase = await createClient();
@@ -188,9 +182,8 @@ export async function listAllProjects(): Promise<QueryResult<ProjectRow[]>> {
 /**
  * Get any project by ID, including drafts.
  *
- * RLS LIMITATION: Current RLS policies only allow reading published projects.
- * This query will return null for unpublished projects until a policy like
- * "Admin read all projects" is added.
+ * REQUIRES: User must be authenticated (CMS 05 policy:
+ * "Authenticated read all projects").
  */
 export async function getProjectById(
   id: string,
@@ -213,14 +206,8 @@ export async function getProjectById(
 /**
  * List all categories, including inactive.
  *
- * RLS LIMITATION: Current RLS policies only allow reading active categories.
- * This query will return only active categories until a policy like
- * "Admin read all categories" is added:
- *
- *   CREATE POLICY "Admin read all categories"
- *     ON public.categories
- *     FOR SELECT
- *     USING (true);  -- or auth.role() = 'authenticated'
+ * REQUIRES: User must be authenticated (CMS 05 policy:
+ * "Authenticated read all categories").
  */
 export async function listAllCategories(): Promise<QueryResult<CategoryRow[]>> {
   const supabase = await createClient();
@@ -240,14 +227,8 @@ export async function listAllCategories(): Promise<QueryResult<CategoryRow[]>> {
 /**
  * List media for any project by ID, including unpublished projects.
  *
- * RLS LIMITATION: Current RLS policies only allow reading media for published
- * projects. This query will return empty for unpublished projects until a
- * policy like "Admin read all media" is added:
- *
- *   CREATE POLICY "Admin read all media"
- *     ON public.media
- *     FOR SELECT
- *     USING (true);  -- or auth.role() = 'authenticated'
+ * REQUIRES: User must be authenticated (CMS 05 policy:
+ * "Authenticated read all media").
  */
 export async function listProjectMedia(
   projectId: string,
