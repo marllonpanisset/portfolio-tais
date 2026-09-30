@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import type { CategoryRow, MediaInsert, MediaRow, MediaUpdate, ProjectRow } from "@/types/database";
+import type { CategoryRow, MediaInsert, MediaRow, MediaUpdate, PageRow, ProjectRow } from "@/types/database";
 
 // ============================================================================
 // Types
@@ -339,4 +339,98 @@ export async function deleteMedia(id: string): Promise<QueryResult<{ id: string 
   }
 
   return { data: { id }, error: null };
+}
+
+// ============================================================================
+// PAGE BUILDER QUERIES (CMS 08.1)
+// ============================================================================
+
+/**
+ * List all published pages.
+ *
+ * Public access: only published pages are returned.
+ */
+export async function listPublishedPages(): Promise<QueryResult<PageRow[]>> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("is_published", true)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data, error: null };
+}
+
+/**
+ * Get a single published page by slug.
+ *
+ * Public access: only published pages are returned.
+ */
+export async function getPublishedPageBySlug(
+  slug: string,
+): Promise<QueryResult<PageRow | null>> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("slug", slug)
+    .eq("is_published", true)
+    .maybeSingle();
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data, error: null };
+}
+
+/**
+ * List all pages, including drafts.
+ *
+ * REQUIRES: User must be authenticated (CMS 08.1 policy:
+ * "Authenticated read all pages").
+ */
+export async function listAllPages(): Promise<QueryResult<PageRow[]>> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("pages")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data, error: null };
+}
+
+/**
+ * Get any page by ID, including drafts.
+ *
+ * REQUIRES: User must be authenticated (CMS 08.1 policy:
+ * "Authenticated read all pages").
+ */
+export async function getPageById(
+  id: string,
+): Promise<QueryResult<PageRow | null>> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data, error: null };
 }

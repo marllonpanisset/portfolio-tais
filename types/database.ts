@@ -164,6 +164,36 @@ export interface Database {
           },
         ];
       };
+      pages: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          content: Json;
+          is_published: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          slug: string;
+          content?: Json;
+          is_published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          slug?: string;
+          content?: Json;
+          is_published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -191,3 +221,7 @@ export type ProjectCategoryInsert = Database["public"]["Tables"]["project_catego
 export type MediaRow = Database["public"]["Tables"]["media"]["Row"];
 export type MediaInsert = Database["public"]["Tables"]["media"]["Insert"];
 export type MediaUpdate = Database["public"]["Tables"]["media"]["Update"];
+
+export type PageRow = Database["public"]["Tables"]["pages"]["Row"];
+export type PageInsert = Database["public"]["Tables"]["pages"]["Insert"];
+export type PageUpdate = Database["public"]["Tables"]["pages"]["Update"];
