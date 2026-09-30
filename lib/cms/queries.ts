@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import type { CategoryRow, MediaRow, ProjectRow } from "@/types/database";
+import type { CategoryRow, MediaInsert, MediaRow, MediaUpdate, ProjectRow } from "@/types/database";
 
 // ============================================================================
 // Types
@@ -247,4 +247,96 @@ export async function listProjectMedia(
   }
 
   return { data, error: null };
+}
+
+/**
+ * Get a single media item by ID.
+ *
+ * REQUIRES: User must be authenticated (CMS 05 policy:
+ * "Authenticated read all media").
+ */
+export async function getMediaById(
+  id: string,
+): Promise<QueryResult<MediaRow | null>> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("media")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data, error: null };
+}
+
+/**
+ * Create a media record.
+ *
+ * REQUIRES: User must be authenticated (CMS 06 policy:
+ * "Authenticated insert media").
+ */
+export async function createMediaRecord(
+  data: MediaInsert,
+): Promise<QueryResult<MediaRow>> {
+  const supabase = await createClient();
+
+  const { data: media, error } = await supabase
+    .from("media")
+    .insert(data)
+    .select()
+    .single();
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data: media, error: null };
+}
+
+/**
+ * Update a media record.
+ *
+ * REQUIRES: User must be authenticated (CMS 06 policy:
+ * "Authenticated update media").
+ */
+export async function updateMedia(
+  id: string,
+  data: MediaUpdate,
+): Promise<QueryResult<MediaRow>> {
+  const supabase = await createClient();
+
+  const { data: media, error } = await supabase
+    .from("media")
+    .update(data)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data: media, error: null };
+}
+
+/**
+ * Delete a media record.
+ *
+ * REQUIRES: User must be authenticated (CMS 06 policy:
+ * "Authenticated delete media").
+ */
+export async function deleteMedia(id: string): Promise<QueryResult<{ id: string }>> {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("media").delete().eq("id", id);
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data: { id }, error: null };
 }

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getProjectById, getProjectCategories } from "@/lib/cms/queries";
+import { getProjectById, getProjectCategories, listProjectMedia } from "@/lib/cms/queries";
 import { ProjectForm } from "../ProjectForm";
+import { MediaManager } from "./MediaManager";
 
 export const metadata: Metadata = {
   title: "Editar Projeto — Admin",
@@ -24,9 +25,10 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
     redirect("/admin/login");
   }
 
-  const [projectResult, categoriesResult] = await Promise.all([
+  const [projectResult, categoriesResult, mediaResult] = await Promise.all([
     getProjectById(id),
     getProjectCategories(id),
+    listProjectMedia(id),
   ]);
 
   if (!projectResult.data) {
@@ -35,6 +37,7 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
 
   const project = projectResult.data;
   const projectCategories = categoriesResult.data ?? [];
+  const media = mediaResult.data ?? [];
 
   return (
     <div className="space-y-6">
@@ -50,6 +53,8 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
         project={project}
         projectCategories={projectCategories}
       />
+
+      <MediaManager projectId={project.id} media={media} />
     </div>
   );
 }
