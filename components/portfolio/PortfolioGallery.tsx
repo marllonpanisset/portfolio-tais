@@ -3,15 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
-import { getPortfolioCategory, getPublishedPortfolioProjects } from "@/content/portfolio";
+import { parseYouTubeUrl } from "@/lib/cms/media";
+import type { HomeGalleryItem } from "@/lib/home-content";
 
-export function PortfolioGallery() {
-  const projects = getPublishedPortfolioProjects();
+export function PortfolioGallery({ items }: { items: HomeGalleryItem[] }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const openerRef = useRef<HTMLButtonElement>(null);
-  const activeProject = activeIndex === null ? null : projects[activeIndex];
+  const activeProject = activeIndex === null ? null : items[activeIndex];
 
   useEffect(() => {
     if (activeIndex === null) return;
@@ -61,10 +61,9 @@ export function PortfolioGallery() {
   return (
     <>
       <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 md:grid-cols-4 md:gap-x-5 md:gap-y-10">
-        {projects.map((project, index) => {
+        {items.map((project, index) => {
           const image = project.media.find((item) => item.kind === "image");
-          if (!image) return null;
-          const category = getPortfolioCategory(project.categoryId);
+          const hasYouTube = project.media.some((item) => item.kind === "youtube");
           return (
             <div key={project.id}>
               <button
@@ -77,18 +76,30 @@ export function PortfolioGallery() {
                 className="group block w-full text-left"
               >
                 <span className="relative block aspect-[4/3] overflow-hidden bg-[#eeeeec]">
-                  <Image
-                    src={image.src}
-                    alt={image.alt ?? project.title}
-                    fill
-                    unoptimized
-                    sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
-                    className="object-cover transition duration-300 ease-out group-hover:scale-[1.015] group-hover:opacity-90"
-                  />
+                  {image && (
+                    <Image
+                      src={image.src}
+                      alt={image.alt ?? project.title}
+                      fill
+                      unoptimized
+                      sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                      className="object-cover transition duration-300 ease-out group-hover:scale-[1.015] group-hover:opacity-90"
+                    />
+                  )}
+                  {!image && hasYouTube && (
+                    <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-black/50">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-current">
+                        <svg viewBox="0 0 16 16" aria-hidden="true" className="ml-0.5 h-4 w-4 fill-current">
+                          <path d="M4 2.5v11L13 8z" />
+                        </svg>
+                      </span>
+                      <span className="text-[0.55rem] tracking-[0.12em]">VÍDEO</span>
+                    </span>
+                  )}
                 </span>
                 <span className="mt-3 flex items-baseline justify-between gap-3 text-[0.65rem] text-black">
                   <span>{project.title}</span>
-                  <span className="text-right text-black/55">{category?.name}</span>
+                  <span className="text-right text-black/55">{project.category}</span>
                 </span>
               </button>
             </div>
@@ -121,23 +132,56 @@ export function PortfolioGallery() {
               ×
             </button>
             <div className="grid gap-6 pt-10 sm:pt-0 md:grid-cols-[minmax(0,1.5fr)_minmax(220px,0.8fr)] md:items-center md:gap-12">
-              {(() => {
-                const image = activeProject.media.find((item) => item.kind === "image");
-                return image ? (
-                  <div className="relative aspect-[4/3] bg-[#eeeeec]">
-                    <Image src={image.src} alt={image.alt ?? activeProject.title} fill unoptimized sizes="(max-width: 767px) 100vw, 65vw" className="object-contain" />
-                  </div>
-                ) : null;
-              })()}
+              <div className="grid gap-5">
+                {activeProject.media.map((media) => (
+                  <figure key={media.id}>
+                    {media.kind === "image" ? (
+                      <div className="relative aspect-[4/3] bg-[#eeeeec]">
+                        <Image
+                          src={media.src}
+                          alt={media.alt ?? activeProject.title}
+                          fill
+                          unoptimized
+                          sizes="(max-width: 767px) 100vw, 65vw"
+                          className="object-contain"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-video w-full bg-black">
+                        {parseYouTubeUrl(media.src) ? (
+                          <iframe
+                            src={`https://www.youtube.com/embed/${parseYouTubeUrl(media.src)}`}
+                            title={media.alt ?? `Vídeo de ${activeProject.title}`}
+                            className="h-full w-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-sm text-white/70">
+                            Vídeo indisponível
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {media.caption && (
+                      <figcaption className="mt-2 text-xs text-black/55">
+                        {media.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
               <div className="max-w-md">
                 <p className="mb-3 text-[0.65rem] tracking-[0.14em] text-black/45">PROJETO DEMONSTRATIVO</p>
                 <h2 id="portfolio-dialog-title" className="font-display text-3xl font-medium tracking-[-0.04em] sm:text-4xl">{activeProject.title}</h2>
-                <p className="mt-3 text-sm text-black/65">{getPortfolioCategory(activeProject.categoryId)?.name}</p>
+                <p className="mt-3 text-sm text-black/65">{activeProject.category}</p>
                 {activeProject.year && <p className="mt-1 text-sm text-black/65">{activeProject.year}</p>}
                 <p className="mt-6 text-sm leading-6 text-black/65">{activeProject.description}</p>
-                <Link href={`/trabalhos/${activeProject.slug}`} className="mt-8 inline-flex items-center gap-2 text-xs font-medium tracking-[0.1em] hover:opacity-55">
-                  VER PROJETO <span aria-hidden="true">→</span>
-                </Link>
+                {activeProject.slug && (
+                  <Link href={`/trabalhos/${activeProject.slug}`} className="mt-8 inline-flex items-center gap-2 text-xs font-medium tracking-[0.1em] hover:opacity-55">
+                    VER PROJETO <span aria-hidden="true">→</span>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

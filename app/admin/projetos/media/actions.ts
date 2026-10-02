@@ -16,6 +16,12 @@ export type MutationResult =
   | { success: true; data: unknown }
   | { success: false; error: string };
 
+function revalidatePublicProjectPages() {
+  revalidatePath("/", "page");
+  revalidatePath("/portfolio", "page");
+  revalidatePath("/trabalhos/[slug]", "page");
+}
+
 /**
  * Gets the next sort_order for a project (max + 1).
  * Returns an error if the query fails.
@@ -113,7 +119,7 @@ export async function uploadProjectImage(
   }
 
   revalidatePath(`/admin/projetos/${projectId}`, "page");
-  revalidatePath("/trabalhos/[slug]", "page");
+  revalidatePublicProjectPages();
 
   return { success: true, data: result.data };
 }
@@ -161,7 +167,7 @@ export async function createYouTubeMedia(
   }
 
   revalidatePath(`/admin/projetos/${projectId}`, "page");
-  revalidatePath("/trabalhos/[slug]", "page");
+  revalidatePublicProjectPages();
 
   return { success: true, data: result.data };
 }
@@ -207,7 +213,7 @@ export async function updateMedia(
   }
 
   revalidatePath(`/admin/projetos/${existing.data.project_id}`, "page");
-  revalidatePath("/trabalhos/[slug]", "page");
+  revalidatePublicProjectPages();
 
   return { success: true, data: result.data };
 }
@@ -251,7 +257,7 @@ export async function deleteMedia(mediaId: string): Promise<MutationResult> {
   }
 
   revalidatePath(`/admin/projetos/${media.project_id}`, "page");
-  revalidatePath("/trabalhos/[slug]", "page");
+  revalidatePublicProjectPages();
 
   return { success: true, data: { id: mediaId } };
 }
@@ -324,6 +330,7 @@ export async function reorderMedia(
   }
 
   revalidatePath(`/admin/projetos/${current.project_id}`, "page");
+  revalidatePublicProjectPages();
 
   return { success: true, data: { id: mediaId } };
 }

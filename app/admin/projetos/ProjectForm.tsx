@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   createProject,
@@ -40,17 +40,26 @@ export function ProjectForm({ mode, project, projectCategories = [] }: ProjectFo
   const [categories, setCategories] = useState<CategoryRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [initialized, setInitialized] = useState(false);
+  useEffect(() => {
+    let isMounted = true;
 
-  // Load categories on mount
-  if (!initialized) {
-    setInitialized(true);
-    listCategories().then((result) => {
-      if (result.data) {
-        setCategories(result.data);
+    async function loadCategories() {
+      try {
+        const result = await listCategories();
+        if (isMounted && result.data) {
+          setCategories(result.data);
+        }
+      } catch {
+        // Keep the form usable if category loading fails.
       }
-    });
-  }
+    }
+
+    void loadCategories();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   function handleTitleChange(value: string) {
     setTitle(value);
@@ -187,25 +196,35 @@ export function ProjectForm({ mode, project, projectCategories = [] }: ProjectFo
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-6">
-        <label className="flex items-center gap-2 text-sm text-text-primary">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="flex items-start gap-3 rounded-md border border-border/70 bg-surface-elevated/40 p-4">
           <input
             type="checkbox"
             checked={isPublished}
             onChange={(e) => setIsPublished(e.target.checked)}
-            className="h-4 w-4 rounded border-border/70 bg-surface"
+            className="mt-0.5 h-4 w-4 shrink-0 rounded border-border/70 bg-surface"
           />
-          Publicado
+          <span>
+            <span className="block text-sm font-medium text-text-primary">Publicado no site</span>
+            <span className="mt-1 block text-xs leading-5 text-text-secondary">
+              Permite que este projeto apareça nas páginas públicas do site.
+            </span>
+          </span>
         </label>
 
-        <label className="flex items-center gap-2 text-sm text-text-primary">
+        <label className="flex items-start gap-3 rounded-md border border-border/70 bg-surface-elevated/40 p-4">
           <input
             type="checkbox"
             checked={isFeatured}
             onChange={(e) => setIsFeatured(e.target.checked)}
-            className="h-4 w-4 rounded border-border/70 bg-surface"
+            className="mt-0.5 h-4 w-4 shrink-0 rounded border-border/70 bg-surface"
           />
-          Destaque
+          <span>
+            <span className="block text-sm font-medium text-text-primary">Destaque na Home</span>
+            <span className="mt-1 block text-xs leading-5 text-text-secondary">
+              Inclui este projeto na galeria de projetos em destaque da Home, se estiver publicado.
+            </span>
+          </span>
         </label>
       </div>
 

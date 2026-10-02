@@ -1,22 +1,13 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/ui/Container";
-import { PageWrapper } from "@/components/layout/PageWrapper";
-import { PortfolioGallery } from "@/components/portfolio/PortfolioGallery";
+import { HomeRenderer } from "@/components/portfolio/HomeRenderer";
+import { getHomeContent } from "@/lib/home-content-source";
 
 export const metadata: Metadata = {
   title: "Home",
   description: "Portfólio de Taís — projetos demonstrativos para validação visual.",
 };
 
-export default function HomePage() {
-  return (
-    <PageWrapper>
-      <Container className="pb-16 pt-3 sm:pb-24 sm:pt-5">
-        <p className="mb-4 text-[0.6rem] tracking-[0.12em] text-black/45 sm:mb-5">
-          GALERIA DEMONSTRATIVA · IMAGENS TEMPORÁRIAS
-        </p>
-        <PortfolioGallery />
-      </Container>
-    </PageWrapper>
-  );
+export default async function HomePage() {
+  const { content, error } = await getHomeContent();
+  return <HomeRenderer content={content} error={error} />;
 }

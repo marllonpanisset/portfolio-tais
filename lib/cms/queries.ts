@@ -390,6 +390,25 @@ export async function getPublishedPageBySlug(
   return { data, error: null };
 }
 
+/** Read the Home editorial record; its public visibility is restricted by RLS to slug = 'home'. */
+export async function getPublicHomePage(): Promise<
+  QueryResult<PageRow | null>
+> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("slug", "home")
+    .maybeSingle();
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data, error: null };
+}
+
 /**
  * List all pages, including drafts.
  *
