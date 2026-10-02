@@ -63,7 +63,11 @@ export function PortfolioGallery({ items }: { items: HomeGalleryItem[] }) {
       <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 md:grid-cols-4 md:gap-x-5 md:gap-y-10">
         {items.map((project, index) => {
           const image = project.media.find((item) => item.kind === "image");
-          const hasYouTube = project.media.some((item) => item.kind === "youtube");
+          const youtube = project.media.find((item) => item.kind === "youtube");
+          const youtubeVideoId = youtube ? parseYouTubeUrl(youtube.src) : null;
+          const youtubeThumbnail = youtubeVideoId
+            ? `https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`
+            : null;
           return (
             <div key={project.id}>
               <button
@@ -76,17 +80,28 @@ export function PortfolioGallery({ items }: { items: HomeGalleryItem[] }) {
                 className="group block w-full text-left"
               >
                 <span className="relative block aspect-[4/3] overflow-hidden bg-[#eeeeec]">
-                  {image && (
+                  {youtubeThumbnail ? (
                     <Image
-                      src={image.src}
-                      alt={image.alt ?? project.title}
+                      src={youtubeThumbnail}
+                      alt={youtube?.alt ?? project.title}
                       fill
                       unoptimized
                       sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
                       className="object-cover transition duration-300 ease-out group-hover:scale-[1.015] group-hover:opacity-90"
                     />
+                  ) : (
+                    image && (
+                      <Image
+                        src={image.src}
+                        alt={image.alt ?? project.title}
+                        fill
+                        unoptimized
+                        sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                        className="object-cover transition duration-300 ease-out group-hover:scale-[1.015] group-hover:opacity-90"
+                      />
+                    )
                   )}
-                  {!image && hasYouTube && (
+                  {!image && !youtubeThumbnail && youtube && (
                     <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-black/50">
                       <span className="flex h-10 w-10 items-center justify-center rounded-full border border-current">
                         <svg viewBox="0 0 16 16" aria-hidden="true" className="ml-0.5 h-4 w-4 fill-current">
@@ -133,7 +148,10 @@ export function PortfolioGallery({ items }: { items: HomeGalleryItem[] }) {
             </button>
             <div className="grid gap-6 pt-10 sm:pt-0 md:grid-cols-[minmax(0,1.5fr)_minmax(220px,0.8fr)] md:items-center md:gap-12">
               <div className="grid gap-5">
-                {activeProject.media.map((media) => (
+                {(activeProject.media.some((media) => media.kind === "youtube")
+                  ? activeProject.media.filter((media) => media.kind === "youtube")
+                  : activeProject.media
+                ).map((media) => (
                   <figure key={media.id}>
                     {media.kind === "image" ? (
                       <div className="relative aspect-[4/3] bg-[#eeeeec]">
