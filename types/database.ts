@@ -111,6 +111,35 @@ export interface Database {
           },
         ];
       };
+      portfolio_projects: {
+        Row: {
+          id: string;
+          project_id: string;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          project_id?: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_projects_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       media: {
         Row: {
           id: string;
@@ -221,6 +250,8 @@ export type ProjectCategoryInsert = Database["public"]["Tables"]["project_catego
 export type MediaRow = Database["public"]["Tables"]["media"]["Row"];
 export type MediaInsert = Database["public"]["Tables"]["media"]["Insert"];
 export type MediaUpdate = Database["public"]["Tables"]["media"]["Update"];
+
+export type PortfolioProjectRow = Database["public"]["Tables"]["portfolio_projects"]["Row"];
 
 export type PageRow = Database["public"]["Tables"]["pages"]["Row"];
 export type PageInsert = Database["public"]["Tables"]["pages"]["Insert"];

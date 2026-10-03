@@ -341,6 +341,62 @@ export async function deleteMedia(id: string): Promise<QueryResult<{ id: string 
   return { data: { id }, error: null };
 }
 
+export async function listPublishedPortfolioProjects(): Promise<
+  QueryResult<ProjectRow[]>
+> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("portfolio_projects")
+    .select("sort_order, projects!inner(*)")
+    .eq("projects.is_published", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  const projects: ProjectRow[] = [];
+  for (const row of data) {
+    const project = (row as { projects: ProjectRow | ProjectRow[] | null }).projects;
+    if (project && !Array.isArray(project)) {
+      projects.push(project);
+    }
+  }
+
+  return { data: projects, error: null };
+}
+
+/**
+ * List all portfolio project selections, including selections pointing to
+ * unpublished projects. Admin only (requires "Authenticated read all
+ * portfolio projects").
+ */
+export async function listAllPortfolioProjects(): Promise<
+  QueryResult<ProjectRow[]>
+> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("portfolio_projects")
+    .select("sort_order, projects(*)")
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  const projects: ProjectRow[] = [];
+  for (const row of data) {
+    const project = (row as { projects: ProjectRow | ProjectRow[] | null }).projects;
+    if (project && !Array.isArray(project)) {
+      projects.push(project);
+    }
+  }
+
+  return { data: projects, error: null };
+}
+
 // ============================================================================
 // PAGE BUILDER QUERIES (CMS 08.1)
 // ============================================================================

@@ -235,6 +235,172 @@ export async function saveBiographyContent(
   return { success: true };
 }
 
+export type SavePortfolioContentResult =
+  | { success: true }
+  | { success: false; error: string };
+
+export async function savePortfolioContent(
+  pageId: string,
+  contentValue: unknown,
+): Promise<SavePortfolioContentResult> {
+  if (typeof pageId !== "string" || !UUID_PATTERN.test(pageId)) {
+    return { success: false, error: "Identificador da página inválido." };
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getClaims();
+  if (authError || !authData?.claims) {
+    return { success: false, error: "Sua sessão expirou. Entre novamente para salvar." };
+  }
+
+  const pageResult = await getPageById(pageId);
+  const page = pageResult.data;
+  if (!page || page.slug !== "portfolio") {
+    return { success: false, error: "A página Portfólio não foi encontrada." };
+  }
+
+  const content = parseCmsPageContent("portfolio", contentValue);
+  if (!content) {
+    return { success: false, error: "O conteúdo do Portfólio é inválido e não pode ser salvo." };
+  }
+
+  const { data: updatedPage, error: updateError } = await supabase
+    .from("pages")
+    .update({ content })
+    .eq("id", page.id)
+    .eq("slug", "portfolio")
+    .eq("updated_at", page.updated_at)
+    .select("id")
+    .maybeSingle();
+
+  if (updateError) {
+    return { success: false, error: "Não foi possível salvar o Portfólio." };
+  }
+  if (!updatedPage) {
+    return {
+      success: false,
+      error: "A página mudou desde que foi carregada. Recarregue e tente novamente.",
+    };
+  }
+
+  revalidatePath("/portfolio", "page");
+  revalidatePath(`/admin/paginas/${page.id}`, "page");
+
+  return { success: true };
+}
+
+export type PortfolioProjectSelectionResult =
+  | { success: true }
+  | { success: false; error: string };
+
+export async function addPortfolioProject(
+  projectId: string,
+): Promise<PortfolioProjectSelectionResult> {
+  if (typeof projectId !== "string" || !UUID_PATTERN.test(projectId)) {
+    return { success: false, error: "Identificador do projeto inválido." };
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getClaims();
+  if (authError || !authData?.claims) {
+    return { success: false, error: "Sua sessão expirou. Entre novamente para continuar." };
+  }
+
+  const { data: project, error: projectError } = await supabase
+    .from("projects")
+    .select("id, is_published")
+    .eq("id", projectId)
+    .maybeSingle();
+
+  if (projectError) {
+    return { success: false, error: "Não foi possível verificar o projeto." };
+  }
+  if (!project || project.is_published !== true) {
+    return { success: false, error: "O projeto não foi encontrado ou não está publicado." };
+  }
+
+  const { count } = await supabase
+    .from("portfolio_projects")
+    .select("id", { count: "exact", head: true });
+
+  const { error: insertError } = await supabase
+    .from("portfolio_projects")
+    .insert({ project_id: projectId, sort_order: count ?? 0 });
+
+  if (insertError) {
+    if (insertError.code === "23505") {
+      return { success: false, error: "O projeto já está no Portfólio." };
+    }
+    return { success: false, error: "Não foi possível adicionar o projeto ao Portfólio." };
+  }
+
+  revalidatePath("/portfolio", "page");
+  revalidatePath("/admin/paginas", "page");
+
+  return { success: true };
+}
+
+export async function removePortfolioProject(
+  projectId: string,
+): Promise<PortfolioProjectSelectionResult> {
+  if (typeof projectId !== "string" || !UUID_PATTERN.test(projectId)) {
+    return { success: false, error: "Identificador do projeto inválido." };
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getClaims();
+  if (authError || !authData?.claims) {
+    return { success: false, error: "Sua sessão expirou. Entre novamente para continuar." };
+  }
+
+  const { error: deleteError } = await supabase
+    .from("portfolio_projects")
+    .delete()
+    .eq("project_id", projectId);
+
+  if (deleteError) {
+    return { success: false, error: "Não foi possível remover o projeto do Portfólio." };
+  }
+
+  revalidatePath("/portfolio", "page");
+  revalidatePath("/admin/paginas", "page");
+
+  return { success: true };
+}
+
+export async function reorderPortfolioProjects(
+  orderedProjectIds: string[],
+): Promise<PortfolioProjectSelectionResult> {
+  if (
+    !Array.isArray(orderedProjectIds) ||
+    orderedProjectIds.some((id) => typeof id !== "string" || !UUID_PATTERN.test(id))
+  ) {
+    return { success: false, error: "Ordem de projetos inválida." };
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getClaims();
+  if (authError || !authData?.claims) {
+    return { success: false, error: "Sua sessão expirou. Entre novamente para continuar." };
+  }
+
+  for (const [index, projectId] of orderedProjectIds.entries()) {
+    const { error: updateError } = await supabase
+      .from("portfolio_projects")
+      .update({ sort_order: index })
+      .eq("project_id", projectId);
+
+    if (updateError) {
+      return { success: false, error: "Não foi possível reordenar os projetos do Portfólio." };
+    }
+  }
+
+  revalidatePath("/portfolio", "page");
+  revalidatePath("/admin/paginas", "page");
+
+  return { success: true };
+}
+
 export type UploadBiographyImageResult =
   | { success: true; data: { storagePath: string; url: string } }
   | { success: false; error: string };

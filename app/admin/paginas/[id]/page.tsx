@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import {
   getPageById,
+  listAllPortfolioProjects,
   listFeaturedProjects,
   listPublishedProjects,
 } from "@/lib/cms/queries";
@@ -13,7 +14,10 @@ import { getFeaturedHomeContent } from "@/lib/home-content-source";
 import { fallbackBiographyContent } from "@/components/biography/BiographyView";
 import { HomePageEditor } from "./HomePageEditor";
 import { BiographyPageEditor } from "./BiographyPageEditor";
+import { PortfolioPageEditor } from "./PortfolioPageEditor";
 import { PageEditor } from "./PageEditor";
+import { fallbackPortfolioContent } from "@/components/portfolio/PortfolioView";
+import { getPortfolioProjects } from "@/lib/portfolio-content-source";
 
 export const metadata: Metadata = {
   title: "Editar Página — Admin",
@@ -88,6 +92,43 @@ export default async function EditPagePage({ params }: EditPagePageProps) {
         pageId={page.id}
         isPublished={page.is_published}
         initialContent={pageContent ?? fallbackBiographyContent}
+        previewHeader={<Header />}
+        previewFooter={<Footer />}
+      />
+    );
+  }
+
+  if (page.slug === "portfolio") {
+    const pageContent = parseCmsPageContent("portfolio", page.content);
+    const [selectedProjectsResult, publishedProjectsResult, previewResult] = await Promise.all([
+      listAllPortfolioProjects(),
+      listPublishedProjects(),
+      getPortfolioProjects(),
+    ]);
+    const portfolioProjects = (selectedProjectsResult.data ?? []).map(
+      ({ id: projectId, title, is_published: isProjectPublished }) => ({
+        id: projectId,
+        title,
+        isPublished: isProjectPublished,
+      }),
+    );
+    const selectedIds = new Set(portfolioProjects.map((project) => project.id));
+    const availableProjects = (publishedProjectsResult.data ?? [])
+      .filter((project) => !selectedIds.has(project.id))
+      .map(({ id: projectId, title }) => ({ id: projectId, title }));
+
+    return (
+      <PortfolioPageEditor
+        pageId={page.id}
+        isPublished={page.is_published}
+        initialContent={pageContent ?? fallbackPortfolioContent}
+        portfolioProjects={portfolioProjects}
+        availableProjects={availableProjects}
+        projectListError={
+          selectedProjectsResult.error !== null ||
+          publishedProjectsResult.error !== null
+        }
+        previewProjects={previewResult.items}
         previewHeader={<Header />}
         previewFooter={<Footer />}
       />

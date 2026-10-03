@@ -43,6 +43,12 @@ function isContactContent(
     hasExactStringFields(value, ["title", "subtitle", "informationText"]);
 }
 
+function isPortfolioContent(
+  value: unknown,
+): value is CmsPageContentByTemplate["portfolio"] {
+  return isRecord(value) && hasExactStringFields(value, ["eyebrow", "title", "description"]);
+}
+
 function isGlobalContent(
   value: unknown,
 ): value is CmsPageContentByTemplate["global"] {
@@ -64,6 +70,8 @@ export function parseCmsPageContent<Template extends CmsPageTemplate>(
       return (isBiographyContent(content) ? content : null) as CmsPageContentByTemplate[Template] | null;
     case "contact":
       return (isContactContent(content) ? content : null) as CmsPageContentByTemplate[Template] | null;
+    case "portfolio":
+      return (isPortfolioContent(content) ? content : null) as CmsPageContentByTemplate[Template] | null;
     case "global":
       return (isGlobalContent(content) ? content : null) as CmsPageContentByTemplate[Template] | null;
   }

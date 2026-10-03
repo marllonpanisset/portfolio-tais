@@ -2,7 +2,8 @@ export type CmsPageTemplate =
   | "home"
   | "biography"
   | "contact"
-  | "global";
+  | "global"
+  | "portfolio";
 
 export interface HomePageContent {
   galleryLabel: string;
@@ -14,6 +15,12 @@ export interface BiographyPageContent {
   introduction: string;
   biography: string;
   about: string[];
+}
+
+export interface PortfolioPageContent {
+  eyebrow: string;
+  title: string;
+  description: string;
 }
 
 export interface ContactPageContent {
@@ -32,6 +39,7 @@ export type CmsPageContentByTemplate = {
   biography: BiographyPageContent;
   contact: ContactPageContent;
   global: GlobalContent;
+  portfolio: PortfolioPageContent;
 };
 
 export type CmsPageContentRecord = {
