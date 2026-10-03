@@ -3,7 +3,7 @@ import { getPublishedPageBySlug } from "@/lib/cms/queries";
 import { parseCmsPageContent } from "@/lib/cms/content-validation";
 import { getPortfolioProjects } from "@/lib/portfolio-content-source";
 import { PortfolioView, fallbackPortfolioContent } from "@/components/portfolio/PortfolioView";
-import { PortfolioProjectList } from "@/components/portfolio/PortfolioProjectList";
+import { PortfolioFilters } from "@/components/portfolio/PortfolioFilters";
 
 export const metadata: Metadata = {
   title: "Portfólio",
@@ -27,7 +27,7 @@ export default async function PortfolioPage() {
       ) : result.items.length === 0 ? (
         <p className="text-sm text-black/60">Nenhum projeto publicado no momento.</p>
       ) : (
-        <PortfolioProjectList projects={result.items} />
+        <PortfolioFilters projects={result.items} />
       )}
     </PortfolioView>
   );
