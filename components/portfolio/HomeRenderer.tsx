@@ -15,7 +15,7 @@ export function HomeRenderer({
   onGalleryLabelClick?: () => void;
 }) {
   const renderedContent = (
-    <Container className="pb-16 pt-3 sm:pb-24 sm:pt-5">
+    <Container className="pb-16 pt-12 sm:pb-24 sm:pt-16">
       {onGalleryLabelClick ? (
         <button
           type="button"

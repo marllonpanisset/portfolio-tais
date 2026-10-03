@@ -69,9 +69,15 @@ export default async function WorkPage({ params }: WorkPageProps) {
 
     return (
       <PageWrapper>
-        <article className="pb-20 pt-12 sm:pb-28 sm:pt-20">
+        <article className="pb-16 pt-12 sm:pb-24 sm:pt-16">
           <Container>
-            <p className="mb-3 text-[0.6rem] tracking-[0.13em] text-black/45">PROJETO</p>
+            <Link
+              href="/portfolio"
+              className="mb-4 inline-flex text-xs tracking-[0.1em] text-black hover:opacity-55"
+            >
+              ← VOLTAR AO PORTFÓLIO
+            </Link>
+            <p className="mb-4 text-[0.6rem] tracking-[0.13em] text-black/45">PROJETO</p>
             <h1 className="font-display text-4xl tracking-[-0.055em] text-black sm:text-6xl">
               {cmsProject.title}
             </h1>
@@ -116,12 +122,7 @@ export default async function WorkPage({ params }: WorkPageProps) {
               ))}
             </div>
 
-            <Link
-              href="/portfolio"
-              className="mt-12 inline-flex text-xs tracking-[0.1em] text-black hover:opacity-55"
-            >
-              ← VOLTAR AO PORTFÓLIO
-            </Link>
+
           </Container>
         </article>
       </PageWrapper>
@@ -137,9 +138,10 @@ export default async function WorkPage({ params }: WorkPageProps) {
 
   return (
     <PageWrapper>
-      <article className="pb-20 pt-12 sm:pb-28 sm:pt-20">
+      <article className="pb-16 pt-12 sm:pb-24 sm:pt-16">
         <Container>
-          <p className="mb-3 text-[0.6rem] tracking-[0.13em] text-black/45">PROJETO DEMONSTRATIVO</p>
+          <Link href="/portfolio" className="mb-4 inline-flex text-xs tracking-[0.1em] text-black hover:opacity-55">← VOLTAR AO PORTFÓLIO</Link>
+          <p className="mb-4 text-[0.6rem] tracking-[0.13em] text-black/45">PROJETO DEMONSTRATIVO</p>
           <h1 className="font-display text-4xl tracking-[-0.055em] text-black sm:text-6xl">{project.title}</h1>
           <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-sm text-black/60">
             {category && <span>{category.name}</span>}
@@ -165,7 +167,7 @@ export default async function WorkPage({ params }: WorkPageProps) {
             ))}
           </div>
 
-          <Link href="/portfolio" className="mt-12 inline-flex text-xs tracking-[0.1em] text-black hover:opacity-55">← VOLTAR AO PORTFÓLIO</Link>
+
         </Container>
       </article>
     </PageWrapper>

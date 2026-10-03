@@ -22,20 +22,20 @@ export function PortfolioView({
   children?: ReactNode;
 }) {
   const rendered = (
-    <Container className="pb-20 pt-12 sm:pb-28 sm:pt-20">
+    <Container className="pb-16 pt-12 sm:pb-24 sm:pt-16">
       <p className="mb-4 text-[0.65rem] tracking-[0.14em] text-black/45">
         {content.eyebrow}
       </p>
       <Heading
         as="h1"
         className={`font-display text-5xl font-normal tracking-[-0.06em] text-black sm:text-7xl ${
-          content.description.trim().length > 0 ? "mb-4 sm:mb-6" : "mb-12 sm:mb-20"
+          content.description.trim().length > 0 ? "mb-4 sm:mb-6" : "mb-12 sm:mb-16"
         }`}
       >
         {content.title}
       </Heading>
       {content.description.trim().length > 0 && (
-        <p className="mb-12 max-w-xl text-sm leading-6 text-black/60 sm:mb-20">
+        <p className="mb-12 max-w-xl text-sm leading-6 text-black/60 sm:mb-16">
           {content.description}
         </p>
       )}

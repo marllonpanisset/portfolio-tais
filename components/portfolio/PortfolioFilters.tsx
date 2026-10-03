@@ -110,7 +110,7 @@ export function PortfolioFilters({ projects }: PortfolioFiltersProps) {
   }, [projects, selectedCategory, sort]);
 
   return (
-    <div className="mb-10 space-y-5 sm:mb-14">
+    <div className="mb-12 space-y-5 sm:mb-16">
       {/* Filter bar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         {/* Category filters */}
