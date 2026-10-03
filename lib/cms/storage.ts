@@ -5,16 +5,19 @@ import { createClient } from "@/lib/supabase/server";
 const BUCKET_NAME = "project-media";
 
 /**
- * Generates a storage path for a project media file.
- * Format: {project_id}/{uuid}.{ext}
+ * Generates a storage path for a media file.
+ * Format: {scopeId}/{uuid}.{ext}, or {prefix}/{scopeId}/{uuid}.{ext} when a prefix is given.
  */
 export function generateMediaPath(
-  projectId: string,
+  scopeId: string,
   filename: string,
+  prefix?: string,
 ): string {
   const ext = filename.split(".").pop() ?? "";
   const uuid = crypto.randomUUID();
-  return `${projectId}/${uuid}.${ext}`;
+  return prefix
+    ? `${prefix}/${scopeId}/${uuid}.${ext}`
+    : `${scopeId}/${uuid}.${ext}`;
 }
 
 /**
@@ -22,11 +25,12 @@ export function generateMediaPath(
  * Returns the storage path on success.
  */
 export async function uploadImage(
-  projectId: string,
+  scopeId: string,
   file: File,
+  prefix?: string,
 ): Promise<string> {
   const supabase = await createClient();
-  const path = generateMediaPath(projectId, file.name);
+  const path = generateMediaPath(scopeId, file.name, prefix);
 
   const { error } = await supabase.storage
     .from(BUCKET_NAME)

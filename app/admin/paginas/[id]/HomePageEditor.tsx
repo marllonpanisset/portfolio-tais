@@ -7,6 +7,7 @@ import type { Route } from "next";
 import { HomeRenderer } from "@/components/portfolio/HomeRenderer";
 import type { HomeContent } from "@/lib/home-content";
 import { saveHomeGalleryLabel, setProjectFeatured } from "./actions";
+import { PublishToggle } from "./PublishToggle";
 
 interface FeaturedProjectOption {
   id: string;
@@ -15,6 +16,7 @@ interface FeaturedProjectOption {
 
 interface HomePageEditorProps {
   pageId: string;
+  isPublished: boolean;
   galleryLabel: string | null;
   previewContent: HomeContent;
   previewError: boolean;
@@ -27,6 +29,7 @@ interface HomePageEditorProps {
 
 export function HomePageEditor({
   pageId,
+  isPublished,
   galleryLabel,
   previewContent,
   previewError,
@@ -108,6 +111,7 @@ export function HomePageEditor({
           <h1 className="text-sm font-medium text-text-primary">Home</h1>
         </div>
         <div className="flex items-center gap-3">
+          <PublishToggle pageId={pageId} initialIsPublished={isPublished} showStatus />
           <span className="hidden text-xs text-text-secondary sm:inline">Home</span>
           <button
             type="button"

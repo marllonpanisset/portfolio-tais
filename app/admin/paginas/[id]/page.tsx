@@ -10,7 +10,9 @@ import {
 } from "@/lib/cms/queries";
 import { parseCmsPageContent } from "@/lib/cms/content-validation";
 import { getFeaturedHomeContent } from "@/lib/home-content-source";
+import { fallbackBiographyContent } from "@/components/biography/BiographyView";
 import { HomePageEditor } from "./HomePageEditor";
+import { BiographyPageEditor } from "./BiographyPageEditor";
 import { PageEditor } from "./PageEditor";
 
 export const metadata: Metadata = {
@@ -60,6 +62,7 @@ export default async function EditPagePage({ params }: EditPagePageProps) {
     return (
       <HomePageEditor
         pageId={page.id}
+        isPublished={page.is_published}
         galleryLabel={pageContent?.galleryLabel ?? null}
         previewContent={previewResult?.content ?? {
           gallery: { label: "", items: [] },
@@ -71,6 +74,20 @@ export default async function EditPagePage({ params }: EditPagePageProps) {
           featuredProjectsResult.error !== null ||
           publishedProjectsResult.error !== null
         }
+        previewHeader={<Header />}
+        previewFooter={<Footer />}
+      />
+    );
+  }
+
+  if (page.slug === "biografia") {
+    const pageContent = parseCmsPageContent("biography", page.content);
+
+    return (
+      <BiographyPageEditor
+        pageId={page.id}
+        isPublished={page.is_published}
+        initialContent={pageContent ?? fallbackBiographyContent}
         previewHeader={<Header />}
         previewFooter={<Footer />}
       />

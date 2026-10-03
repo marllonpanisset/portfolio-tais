@@ -24,6 +24,7 @@ import {
   BLOCK_TYPE_DESCRIPTIONS,
 } from "@/lib/cms/page-builder";
 import { cn } from "@/lib/utils";
+import { PublishToggle } from "./PublishToggle";
 
 // ============================================================================
 // Types
@@ -180,6 +181,7 @@ export function PageEditor({ page }: PageEditorProps) {
           </span>
         </div>
         <div className="flex items-center gap-2">
+          <PublishToggle pageId={page.id} initialIsPublished={page.is_published} showStatus />
           <button
             disabled
             className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary opacity-50 cursor-not-allowed"

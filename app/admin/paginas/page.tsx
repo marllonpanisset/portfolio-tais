@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata, Route } from "next";
 import { listAllPages } from "@/lib/cms/queries";
+import { PublishToggle } from "./[id]/PublishToggle";
 
 export const metadata: Metadata = {
   title: "Páginas — Admin",
@@ -78,16 +79,19 @@ export default async function AdminPagesPage() {
                           : "bg-yellow-500/10 text-yellow-400"
                       }`}
                     >
-                      {page.is_published ? "Publicada" : "Rascunho"}
+                      {page.is_published ? "Publicado" : "Rascunho"}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link
-                      href={`/admin/paginas/${page.id}` as Route}
-                      className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface-elevated/75 px-3 text-xs font-medium text-text-primary transition-colors hover:border-border hover:bg-surface-elevated"
-                    >
-                      Editar
-                    </Link>
+                    <div className="flex items-center justify-end gap-2">
+                      <PublishToggle pageId={page.id} initialIsPublished={page.is_published} />
+                      <Link
+                        href={`/admin/paginas/${page.id}` as Route}
+                        className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface-elevated/75 px-3 text-xs font-medium text-text-primary transition-colors hover:border-border hover:bg-surface-elevated"
+                      >
+                        Editar
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}
