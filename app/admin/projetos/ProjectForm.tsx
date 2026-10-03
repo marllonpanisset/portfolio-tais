@@ -8,6 +8,7 @@ import {
   listCategories,
   type ProjectFormData,
 } from "./actions";
+import { createYouTubeMedia, uploadProjectImage } from "./media/actions";
 import type { CategoryRow, ProjectRow } from "@/types/database";
 
 interface ProjectFormProps {
@@ -40,6 +41,8 @@ export function ProjectForm({ mode, project, projectCategories = [] }: ProjectFo
   const [categories, setCategories] = useState<CategoryRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mediaImage, setMediaImage] = useState<File | null>(null);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   useEffect(() => {
     let isMounted = true;
 
@@ -92,18 +95,57 @@ export function ProjectForm({ mode, project, projectCategories = [] }: ProjectFo
       category_ids: selectedCategories,
     };
 
-    const result =
-      mode === "create"
-        ? await createProject(formData)
-        : await updateProject(project!.id, formData);
+    if (mode === "edit") {
+      const result = await updateProject(project!.id, formData);
 
-    setLoading(false);
+      setLoading(false);
+
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+
+      router.push("/admin/projetos");
+      router.refresh();
+      return;
+    }
+
+    const result = await createProject(formData);
 
     if (!result.success) {
+      setLoading(false);
       setError(result.error);
       return;
     }
 
+    const projectId = (result.data as { id?: string })?.id;
+    if (!projectId) {
+      setLoading(false);
+      router.push("/admin/projetos");
+      return;
+    }
+
+    if (mediaImage) {
+      const imageFormData = new FormData();
+      imageFormData.append("file", mediaImage);
+      const imageResult = await uploadProjectImage(projectId, imageFormData);
+      if (!imageResult.success) {
+        setLoading(false);
+        router.push(`/admin/projetos/${projectId}?mediaError=${encodeURIComponent(`Projeto criado, mas a imagem não pôde ser enviada: ${imageResult.error} Você pode adicionar a mídia na edição do projeto.`)}`);
+        return;
+      }
+    }
+
+    if (youtubeUrl.trim().length > 0) {
+      const youtubeResult = await createYouTubeMedia(projectId, youtubeUrl);
+      if (!youtubeResult.success) {
+        setLoading(false);
+        router.push(`/admin/projetos/${projectId}?mediaError=${encodeURIComponent(`Projeto criado, mas o vídeo do YouTube não pôde ser adicionado: ${youtubeResult.error} Verifique a URL na edição do projeto.`)}`);
+        return;
+      }
+    }
+
+    setLoading(false);
     router.push("/admin/projetos");
     router.refresh();
   }
@@ -252,13 +294,52 @@ export function ProjectForm({ mode, project, projectCategories = [] }: ProjectFo
         </div>
       )}
 
+      {mode === "create" && (
+        <div className="space-y-4 rounded-md border border-border/70 bg-surface-elevated/40 p-4">
+          <h3 className="text-sm font-medium text-text-primary">Mídia</h3>
+
+          <div className="space-y-2">
+            <label htmlFor="projectImage" className="block text-sm font-medium text-text-primary">
+              Imagem (opcional)
+            </label>
+            <input
+              id="projectImage"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setMediaImage(e.target.files?.[0] ?? null)}
+              className="block w-full text-sm text-text-secondary file:mr-4 file:rounded-md file:border-0 file:bg-surface-elevated file:px-4 file:py-2 file:text-sm file:font-medium file:text-text-primary"
+            />
+            <p className="text-xs text-text-secondary">
+              Você pode adicionar ou alterar a imagem depois, na edição do projeto.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="projectYoutube" className="block text-sm font-medium text-text-primary">
+              URL do YouTube (opcional)
+            </label>
+            <input
+              id="projectYoutube"
+              type="url"
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=..."
+              className="w-full rounded-md border border-border/70 bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary/50 focus:border-signal focus:outline-none focus:ring-1 focus:ring-signal"
+            />
+            <p className="text-xs text-text-secondary">
+              Deixe em branco para não adicionar vídeo agora.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center gap-4 pt-4">
         <button
           type="submit"
           disabled={loading}
           className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] bg-gradient-to-b from-signal-strong to-signal px-5 text-[0.9375rem] font-medium text-white transition-all hover:brightness-105 disabled:opacity-50"
         >
-          {loading ? "Salvando..." : mode === "create" ? "Criar projeto" : "Salvar alterações"}
+          {loading ? (mode === "create" ? "Salvando projeto e mídias..." : "Salvando...") : mode === "create" ? "Criar projeto" : "Salvar alterações"}
         </button>
         <button
           type="button"

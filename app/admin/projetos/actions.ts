@@ -85,6 +85,25 @@ export async function createProject(
     }
   }
 
+  if (data.is_published && data.is_featured) {
+    const { count } = await supabase
+      .from("portfolio_projects")
+      .select("id", { count: "exact", head: true });
+
+    const { error: portfolioLinkError } = await supabase
+      .from("portfolio_projects")
+      .insert({ project_id: project.id, sort_order: count ?? 0 });
+
+    if (portfolioLinkError) {
+      await supabase
+        .from("project_categories")
+        .delete()
+        .eq("project_id", project.id);
+      await supabase.from("projects").delete().eq("id", project.id);
+      return { success: false, error: portfolioLinkError.message };
+    }
+  }
+
   revalidatePath("/", "layout");
   revalidatePath("/portfolio", "layout");
 

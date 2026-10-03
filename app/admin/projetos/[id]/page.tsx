@@ -12,10 +12,12 @@ export const metadata: Metadata = {
 
 interface EditProjectPageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ mediaError?: string }>;
 }
 
-export default async function EditProjectPage({ params }: EditProjectPageProps) {
+export default async function EditProjectPage({ params, searchParams }: EditProjectPageProps) {
   const { id } = await params;
+  const { mediaError } = await searchParams;
 
   const supabase = await createClient();
 
@@ -47,6 +49,12 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
           Edite as informações do projeto
         </p>
       </div>
+
+      {mediaError && (
+        <div className="rounded-md border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-400">
+          {mediaError}
+        </div>
+      )}
 
       <ProjectForm
         mode="edit"
