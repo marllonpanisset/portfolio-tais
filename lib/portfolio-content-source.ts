@@ -32,10 +32,11 @@ export async function getPortfolioProjects(): Promise<PortfolioProjectsResult> {
         return { item: null, error: true };
       }
 
-      // The existing card shows one category; choose the first active category by display order.
-      const category = [...categoriesResult.data].sort(
+      // Keep all categories for filtering; also retain the first one for display if needed
+      const sortedCategories = [...categoriesResult.data].sort(
         (a, b) => a.sort_order - b.sort_order,
-      )[0];
+      );
+      const category = sortedCategories[0];
       const resolvedMedia = await Promise.all(
         mediaResult.data.map(async (item) => ({
           id: item.id,
@@ -63,6 +64,7 @@ export async function getPortfolioProjects(): Promise<PortfolioProjectsResult> {
         order: index,
         media: mapProjectMediaToHomeGallery(resolvedMedia),
         ...(category ? { category: category.name } : {}),
+        categories: sortedCategories.map((c) => c.name),
         ...(project.year === null ? {} : { year: project.year }),
       };
 

@@ -111,6 +111,30 @@ export interface Database {
           },
         ];
       };
+      site_settings: {
+        Row: {
+          id: string;
+          key: string;
+          value: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          key: string;
+          value?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          key?: string;
+          value?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       portfolio_projects: {
         Row: {
           id: string;
@@ -252,6 +276,8 @@ export type MediaInsert = Database["public"]["Tables"]["media"]["Insert"];
 export type MediaUpdate = Database["public"]["Tables"]["media"]["Update"];
 
 export type PortfolioProjectRow = Database["public"]["Tables"]["portfolio_projects"]["Row"];
+
+export type SiteSettingRow = Database["public"]["Tables"]["site_settings"]["Row"];
 
 export type PageRow = Database["public"]["Tables"]["pages"]["Row"];
 export type PageInsert = Database["public"]["Tables"]["pages"]["Insert"];

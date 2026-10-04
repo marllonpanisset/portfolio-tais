@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { Container } from "@/components/ui";
 import { mainNav } from "@/config/client-navigation";
+import { getSiteSettings } from "@/lib/cms/queries";
+import { SocialLinks } from "@/components/social/SocialLinks";
 
-export function Footer() {
+export async function Footer() {
+  const settingsResult = await getSiteSettings();
+  const settings = settingsResult.data;
+
   return (
     <footer className="border-t border-black/10 bg-white text-black">
       <Container className="py-10 md:py-14">
@@ -24,6 +29,10 @@ export function Footer() {
               </Link>
             ))}
           </nav>
+        </div>
+
+        <div className="mt-6">
+          <SocialLinks settings={settings} iconClassName="h-5 w-5" />
         </div>
 
         <div className="mt-9 border-t border-black/15 pt-4 text-[0.65rem] text-black/50">

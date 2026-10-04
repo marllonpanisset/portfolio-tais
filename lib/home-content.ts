@@ -13,6 +13,7 @@ export interface HomeGalleryItem {
   slug: string;
   description: string;
   category?: string;
+  categories?: string[];
   year?: number;
   order: number;
   media: HomeGalleryMedia[];
@@ -72,6 +73,13 @@ function normalizeItem(value: unknown): HomeGalleryItem | null {
     order: value.order,
     media: media.sort((a, b) => a.order - b.order),
     ...(typeof value.category === "string" ? { category: value.category } : {}),
+    ...(Array.isArray(value.categories)
+      ? {
+          categories: value.categories.filter(
+            (c) => typeof c === "string",
+          ) as string[],
+        }
+      : {}),
     ...(isFiniteNumber(value.year) ? { year: value.year } : {}),
   };
 }

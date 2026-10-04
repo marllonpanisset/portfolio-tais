@@ -1,6 +1,11 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  SITE_SETTING_KEYS,
+  type SiteSettingKey,
+  type SiteSettings,
+} from "@/lib/cms/site-settings";
 import type { CategoryRow, MediaInsert, MediaRow, MediaUpdate, PageRow, ProjectRow } from "@/types/database";
 
 // ============================================================================
@@ -10,6 +15,38 @@ import type { CategoryRow, MediaInsert, MediaRow, MediaUpdate, PageRow, ProjectR
 export type QueryResult<T> =
   | { data: T; error: null }
   | { data: null; error: string };
+
+// ============================================================================
+// SITE SETTINGS
+// ============================================================================
+
+/**
+ * Read all site settings as a complete map for the known keys
+ * (missing rows come back as null).
+ */
+export async function getSiteSettings(): Promise<
+  QueryResult<SiteSettings>
+> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.from("site_settings").select("key, value");
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  const settings = Object.fromEntries(
+    SITE_SETTING_KEYS.map((key) => [key, null]),
+  ) as SiteSettings;
+
+  for (const row of data ?? []) {
+    if ((SITE_SETTING_KEYS as readonly string[]).includes(row.key)) {
+      settings[row.key as SiteSettingKey] = row.value;
+    }
+  }
+
+  return { data: settings, error: null };
+}
 
 // ============================================================================
 // PUBLIC QUERIES

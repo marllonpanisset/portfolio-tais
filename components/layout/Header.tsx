@@ -24,7 +24,11 @@ export function Header() {
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Navegação principal">
           {mainNav.map(({ label, href }) => {
-            const active = href === "/" ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
+            const active = href === "/"
+              ? pathname === href
+              : href === "/portfolio"
+                ? pathname === href || pathname.startsWith("/trabalhos")
+                : pathname === href || pathname.startsWith(`${href}/`);
             return (
               <Link
                 key={href}
