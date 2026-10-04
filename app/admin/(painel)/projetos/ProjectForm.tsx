@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   createProject,
   updateProject,
-  listCategories,
   type ProjectFormData,
 } from "./actions";
 import { createYouTubeMedia, uploadProjectImage } from "./media/actions";
@@ -35,48 +34,23 @@ export function ProjectForm({ mode, project, projectCategories = [] }: ProjectFo
   const [isPublished, setIsPublished] = useState(project?.is_published ?? false);
   const [isFeatured, setIsFeatured] = useState(project?.is_featured ?? false);
   const [sortOrder, setSortOrder] = useState(project?.sort_order?.toString() ?? "0");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    projectCategories.map((c) => c.id),
-  );
-  const [categories, setCategories] = useState<CategoryRow[]>([]);
+  const [categoryName, setCategoryName] = useState<string>(() => {
+    // Legacy projects may carry multiple categories: pick the first by
+    // display order so the field has a single deterministic value. Saving
+    // through this form keeps only the chosen primary category. Global
+    // categories themselves are never deleted here.
+    const sorted = [...projectCategories].sort((a, b) => a.sort_order - b.sort_order);
+    return sorted[0]?.name ?? "";
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mediaImage, setMediaImage] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState("");
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadCategories() {
-      try {
-        const result = await listCategories();
-        if (isMounted && result.data) {
-          setCategories(result.data);
-        }
-      } catch {
-        // Keep the form usable if category loading fails.
-      }
-    }
-
-    void loadCategories();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   function handleTitleChange(value: string) {
     setTitle(value);
     if (mode === "create") {
       setSlug(slugify(value));
     }
-  }
-
-  function toggleCategory(categoryId: string) {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId],
-    );
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -92,7 +66,7 @@ export function ProjectForm({ mode, project, projectCategories = [] }: ProjectFo
       is_published: isPublished,
       is_featured: isFeatured,
       sort_order: parseInt(sortOrder, 10) || 0,
-      category_ids: selectedCategories,
+      category_name: categoryName.trim().length > 0 ? categoryName.trim() : null,
     };
 
     if (mode === "edit") {
@@ -270,29 +244,22 @@ export function ProjectForm({ mode, project, projectCategories = [] }: ProjectFo
         </label>
       </div>
 
-      {categories.length > 0 && (
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-text-primary">
-            Categorias
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                type="button"
-                onClick={() => toggleCategory(category.id)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
-                  selectedCategories.includes(category.id)
-                    ? "bg-signal text-white"
-                    : "bg-surface-elevated text-text-secondary hover:text-text-primary"
-                }`}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="space-y-2">
+        <label htmlFor="categoryName" className="block text-sm font-medium text-text-primary">
+          Categoria
+        </label>
+        <input
+          id="categoryName"
+          type="text"
+          value={categoryName}
+          onChange={(e) => setCategoryName(e.target.value)}
+          placeholder="Ex.: Pós-produção cinematográfica"
+          className="w-full rounded-md border border-border/70 bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary/50 focus:border-signal focus:outline-none focus:ring-1 focus:ring-signal"
+        />
+        <p className="text-xs text-text-secondary">
+          Informe uma categoria existente ou uma nova; ela será criada automaticamente se ainda não existir.
+        </p>
+      </div>
 
       {mode === "create" && (
         <div className="space-y-4 rounded-md border border-border/70 bg-surface-elevated/40 p-4">

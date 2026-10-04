@@ -21,7 +21,7 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
+    <div className="flex min-h-[60vh] items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-text-primary">Admin</h1>

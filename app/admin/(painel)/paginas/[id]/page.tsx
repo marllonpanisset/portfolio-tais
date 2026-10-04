@@ -15,8 +15,10 @@ import { fallbackBiographyContent } from "@/components/biography/BiographyView";
 import { HomePageEditor } from "./HomePageEditor";
 import { BiographyPageEditor } from "./BiographyPageEditor";
 import { PortfolioPageEditor } from "./PortfolioPageEditor";
+import { ContactPageEditor } from "./ContactPageEditor";
 import { PageEditor } from "./PageEditor";
 import { fallbackPortfolioContent } from "@/components/portfolio/PortfolioView";
+import { fallbackContactContent } from "@/components/contact/ContactView";
 import { getPortfolioProjects } from "@/lib/portfolio-content-source";
 
 export const metadata: Metadata = {
@@ -129,6 +131,20 @@ export default async function EditPagePage({ params }: EditPagePageProps) {
           publishedProjectsResult.error !== null
         }
         previewProjects={previewResult.items}
+        previewHeader={<Header />}
+        previewFooter={<Footer />}
+      />
+    );
+  }
+
+  if (page.slug === "contato") {
+    const pageContent = parseCmsPageContent("contact", page.content);
+
+    return (
+      <ContactPageEditor
+        pageId={page.id}
+        isPublished={page.is_published}
+        initialContent={pageContent ?? fallbackContactContent}
         previewHeader={<Header />}
         previewFooter={<Footer />}
       />

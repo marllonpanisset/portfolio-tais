@@ -401,6 +401,60 @@ export async function reorderPortfolioProjects(
   return { success: true };
 }
 
+export type SaveContactContentResult =
+  | { success: true }
+  | { success: false; error: string };
+
+export async function saveContactContent(
+  pageId: string,
+  contentValue: unknown,
+): Promise<SaveContactContentResult> {
+  if (typeof pageId !== "string" || !UUID_PATTERN.test(pageId)) {
+    return { success: false, error: "Identificador da página inválido." };
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getClaims();
+  if (authError || !authData?.claims) {
+    return { success: false, error: "Sua sessão expirou. Entre novamente para salvar." };
+  }
+
+  const pageResult = await getPageById(pageId);
+  const page = pageResult.data;
+  if (!page || page.slug !== "contato") {
+    return { success: false, error: "A página Contato não foi encontrada." };
+  }
+
+  const content = parseCmsPageContent("contact", contentValue);
+  if (!content) {
+    return { success: false, error: "O conteúdo do Contato é inválido e não pode ser salvo." };
+  }
+
+  const { data: updatedPage, error: updateError } = await supabase
+    .from("pages")
+    .update({ content })
+    .eq("id", page.id)
+    .eq("slug", "contato")
+    .eq("updated_at", page.updated_at)
+    .select("id")
+    .maybeSingle();
+
+  if (updateError) {
+    return { success: false, error: "Não foi possível salvar o Contato." };
+  }
+  if (!updatedPage) {
+    return {
+      success: false,
+      error: "A página mudou desde que foi carregada. Recarregue e tente novamente.",
+    };
+  }
+
+  revalidatePath("/contato", "page");
+  revalidatePath(`/admin/paginas/${page.id}`, "page");
+
+  return { success: true };
+}
+
 export type UploadBiographyImageResult =
   | { success: true; data: { storagePath: string; url: string } }
   | { success: false; error: string };

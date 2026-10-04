@@ -8,16 +8,17 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Layout raiz de /admin.
+ *
+ * Aplica-se a todas as rotas sob /admin, inclusive /admin/login, e por isso
+ * não deve conter chrome visual. O shell do painel (Sidebar + AdminHeader)
+ * fica em ./(painel)/layout.tsx, que cobre somente as rotas protegidas.
+ */
 export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div className="min-h-screen bg-surface">
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {children}
-      </main>
-    </div>
-  );
+  return <>{children}</>;
 }

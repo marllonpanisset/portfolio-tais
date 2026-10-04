@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
+
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/config/client-site";
@@ -135,9 +134,7 @@ export default function RootLayout({
         <JsonLd data={websiteJsonLd()} />
 
         <MotionProvider>
-          <Header />
           {children}
-          <Footer />
         </MotionProvider>
 
       </body>

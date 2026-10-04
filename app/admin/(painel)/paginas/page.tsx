@@ -39,8 +39,8 @@ export default async function AdminPagesPage() {
           <p className="text-sm text-text-secondary">Nenhuma página encontrada.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-border/70">
-          <table className="w-full">
+        <div className="overflow-x-auto rounded-lg border border-border/70">
+          <table className="w-full min-w-[640px]">
             <thead>
               <tr className="border-b border-border/70 bg-surface-elevated/50">
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-secondary">

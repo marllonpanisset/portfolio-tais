@@ -17,7 +17,7 @@ export interface ProjectFormData {
   is_published: boolean;
   is_featured: boolean;
   sort_order: number;
-  category_ids: string[];
+  category_name: string | null;
 }
 
 function validateProjectData(data: Partial<ProjectFormData>): string | null {
@@ -34,6 +34,60 @@ function validateProjectData(data: Partial<ProjectFormData>): string | null {
     }
   }
   return null;
+}
+
+function slugifyCategory(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+async function resolveCategoryId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  name: string,
+): Promise<{ id: string } | { error: string }> {
+  const trimmed = name.trim();
+  if (trimmed.length === 0) {
+    return { error: "Categoria inválida." };
+  }
+
+  const { data: existing, error: findError } = await supabase
+    .from("categories")
+    .select("id")
+    .ilike("name", trimmed)
+    .maybeSingle();
+
+  if (findError) {
+    return { error: findError.message };
+  }
+  if (existing) {
+    return { id: existing.id };
+  }
+
+  const { data: created, error: insertError } = await supabase
+    .from("categories")
+    .insert({ name: trimmed, slug: slugifyCategory(trimmed), is_active: true })
+    .select("id")
+    .single();
+
+  if (insertError) {
+    if (insertError.code === "23505") {
+      const { data: bySlug } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("slug", slugifyCategory(trimmed))
+        .maybeSingle();
+      if (bySlug) {
+        return { id: bySlug.id };
+      }
+    }
+    return { error: insertError.message };
+  }
+
+  return { id: created.id };
 }
 
 export async function createProject(
@@ -69,15 +123,16 @@ export async function createProject(
     return { success: false, error: projectError.message };
   }
 
-  if (data.category_ids.length > 0) {
-    const links = data.category_ids.map((categoryId) => ({
-      project_id: project.id,
-      category_id: categoryId,
-    }));
+  if (data.category_name && data.category_name.trim().length > 0) {
+    const category = await resolveCategoryId(supabase, data.category_name);
+    if ("error" in category) {
+      await supabase.from("projects").delete().eq("id", project.id);
+      return { success: false, error: category.error };
+    }
 
     const { error: linkError } = await supabase
       .from("project_categories")
-      .insert(links);
+      .insert([{ project_id: project.id, category_id: category.id }]);
 
     if (linkError) {
       await supabase.from("projects").delete().eq("id", project.id);
@@ -152,15 +207,15 @@ export async function updateProject(
     return { success: false, error: deleteError.message };
   }
 
-  if (data.category_ids.length > 0) {
-    const links = data.category_ids.map((categoryId) => ({
-      project_id: id,
-      category_id: categoryId,
-    }));
+  if (data.category_name && data.category_name.trim().length > 0) {
+    const category = await resolveCategoryId(supabase, data.category_name);
+    if ("error" in category) {
+      return { success: false, error: category.error };
+    }
 
     const { error: linkError } = await supabase
       .from("project_categories")
-      .insert(links);
+      .insert([{ project_id: id, category_id: category.id }]);
 
     if (linkError) {
       return { success: false, error: linkError.message };
