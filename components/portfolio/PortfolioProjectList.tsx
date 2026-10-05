@@ -27,7 +27,7 @@ export function PortfolioProjectList({ projects }: { projects: HomeGalleryItem[]
               </Link>
             )}
             <div className={`md:col-span-4 ${index % 2 ? "md:col-start-1 md:row-start-1" : ""}`}>
-              <p className="mb-3 text-[0.6rem] tracking-[0.12em] text-black/40">PROJETO DEMONSTRATIVO</p>
+              <p className="mb-3 text-[0.6rem] tracking-[0.12em] text-black/40">PROJETO</p>
               <h2 className="font-display text-2xl tracking-[-0.04em] text-black sm:text-3xl">
                 <Link href={`/trabalhos/${project.slug}`} className="hover:opacity-55">{project.title}</Link>
               </h2>

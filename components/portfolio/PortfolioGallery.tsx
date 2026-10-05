@@ -190,7 +190,7 @@ export function PortfolioGallery({ items }: { items: HomeGalleryItem[] }) {
                 ))}
               </div>
               <div className="max-w-md">
-                <p className="mb-3 text-[0.65rem] tracking-[0.14em] text-black/45">PROJETO DEMONSTRATIVO</p>
+                <p className="mb-3 text-[0.65rem] tracking-[0.14em] text-black/45">PROJETO</p>
                 <h2 id="portfolio-dialog-title" className="font-display text-3xl font-medium tracking-[-0.04em] sm:text-4xl">{activeProject.title}</h2>
                 <p className="mt-3 text-sm text-black/65">{activeProject.category}</p>
                 {activeProject.year && <p className="mt-1 text-sm text-black/65">{activeProject.year}</p>}

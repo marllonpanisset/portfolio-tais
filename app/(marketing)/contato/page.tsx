@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 
 import { ContactView, fallbackContactContent } from "@/components/contact/ContactView";
+import { siteConfig } from "@/config/client-site";
 import { getPublishedPageBySlug, getSiteSettings } from "@/lib/cms/queries";
 import { parseCmsPageContent } from "@/lib/cms/content-validation";
 
 export const metadata: Metadata = {
   title: "Contato",
-  description: "Informações de contato de Taís. Conteúdo em preparação.",
+  description: `Canais de contato de ${siteConfig.author.name}.`,
 };
 
 export default async function ContactPage() {

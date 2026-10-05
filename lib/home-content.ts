@@ -97,7 +97,7 @@ export function mapProjectsToHomeContent(
     media: HomeGalleryMedia[];
   }>,
   categories: ReadonlyArray<{ id: string; name: string }>,
-  label = "GALERIA DEMONSTRATIVA · IMAGENS TEMPORÁRIAS",
+  label = "GALERIA",
 ): HomeContent {
   const items = projects.map((project) => {
     const category = categories.find((item) => item.id === project.categoryId);

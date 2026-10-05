@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { HomeRenderer } from "@/components/portfolio/HomeRenderer";
+import { siteConfig } from "@/config/client-site";
 import { getHomeContent } from "@/lib/home-content-source";
 
 export const metadata: Metadata = {
-  title: "Home",
-  description: "Portfólio de Taís — projetos demonstrativos para validação visual.",
+  title: "Portfólio",
+  description: siteConfig.description,
 };
 
 export default async function HomePage() {
