@@ -11,14 +11,16 @@ import {
 } from "@/lib/cms/queries";
 import { parseCmsPageContent } from "@/lib/cms/content-validation";
 import { getFeaturedHomeContent } from "@/lib/home-content-source";
-import { fallbackBiographyContent } from "@/components/biography/BiographyView";
+import type {
+  BiographyPageContent,
+  ContactPageContent,
+  PortfolioPageContent,
+} from "@/lib/cms/content-types";
 import { HomePageEditor } from "./HomePageEditor";
 import { BiographyPageEditor } from "./BiographyPageEditor";
 import { PortfolioPageEditor } from "./PortfolioPageEditor";
 import { ContactPageEditor } from "./ContactPageEditor";
 import { PageEditor } from "./PageEditor";
-import { fallbackPortfolioContent } from "@/components/portfolio/PortfolioView";
-import { fallbackContactContent } from "@/components/contact/ContactView";
 import { getPortfolioProjects } from "@/lib/portfolio-content-source";
 
 export const metadata: Metadata = {
@@ -29,6 +31,48 @@ export const metadata: Metadata = {
 interface EditPagePageProps {
   params: Promise<{ id: string }>;
 }
+
+/**
+ * Seed for the Biography editor when the page has no valid CMS payload.
+ *
+ * The field set matches `isBiographyContent` in lib/cms/content-validation.ts,
+ * so an empty draft is a structurally valid BiographyPageContent and can be
+ * saved and published without the editor rejecting it. Values are intentionally
+ * empty: the editor must not pre-fill demo copy.
+ */
+const EMPTY_BIOGRAPHY_CONTENT: BiographyPageContent = {
+  publicName: "",
+  profileImage: "",
+  introduction: "",
+  biography: "",
+  about: [],
+};
+
+/**
+ * Seed for the Portfolio editor when the page has no valid CMS payload.
+ *
+ * The field set matches `isPortfolioContent` in lib/cms/content-validation.ts,
+ * so an empty draft is a structurally valid PortfolioPageContent. Values are
+ * intentionally empty: the editor must not pre-fill demo copy.
+ */
+const EMPTY_PORTFOLIO_CONTENT: PortfolioPageContent = {
+  eyebrow: "",
+  title: "",
+  description: "",
+};
+
+/**
+ * Seed for the Contact editor when the page has no valid CMS payload.
+ *
+ * The field set matches `isContactContent` in lib/cms/content-validation.ts,
+ * so an empty draft is a structurally valid ContactPageContent. Values are
+ * intentionally empty: the editor must not pre-fill demo copy.
+ */
+const EMPTY_CONTACT_CONTENT: ContactPageContent = {
+  title: "",
+  subtitle: "",
+  informationText: "",
+};
 
 export default async function EditPagePage({ params }: EditPagePageProps) {
   const { id } = await params;
@@ -93,7 +137,7 @@ export default async function EditPagePage({ params }: EditPagePageProps) {
       <BiographyPageEditor
         pageId={page.id}
         isPublished={page.is_published}
-        initialContent={pageContent ?? fallbackBiographyContent}
+        initialContent={pageContent ?? EMPTY_BIOGRAPHY_CONTENT}
         previewHeader={<Header />}
         previewFooter={<Footer />}
       />
@@ -123,7 +167,7 @@ export default async function EditPagePage({ params }: EditPagePageProps) {
       <PortfolioPageEditor
         pageId={page.id}
         isPublished={page.is_published}
-        initialContent={pageContent ?? fallbackPortfolioContent}
+        initialContent={pageContent ?? EMPTY_PORTFOLIO_CONTENT}
         portfolioProjects={portfolioProjects}
         availableProjects={availableProjects}
         projectListError={
@@ -144,7 +188,7 @@ export default async function EditPagePage({ params }: EditPagePageProps) {
       <ContactPageEditor
         pageId={page.id}
         isPublished={page.is_published}
-        initialContent={pageContent ?? fallbackContactContent}
+        initialContent={pageContent ?? EMPTY_CONTACT_CONTENT}
         previewHeader={<Header />}
         previewFooter={<Footer />}
       />

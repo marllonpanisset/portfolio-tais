@@ -3,18 +3,9 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { PageWrapper } from "@/components/layout/PageWrapper";
+import { SocialLinks } from "@/components/social/SocialLinks";
 import type { ContactPageContent } from "@/lib/cms/content-types";
 import type { SiteSettings } from "@/lib/cms/site-settings";
-
-/** Seed used when the CMS payload is missing or invalid; mirrors the page's current standalone content. */
-export const fallbackContactContent: ContactPageContent = {
-  title: "Vamos conversar?",
-  subtitle: "Contato",
-  informationText:
-    "Os canais de contato estão em preparação e serão publicados após confirmação.",
-};
-
-import { SocialLinks } from "@/components/social/SocialLinks";
 
 export function ContactView({
   content,
@@ -37,24 +28,26 @@ export function ContactView({
         {content.title}
       </Heading>
 
-      <div className="mt-12 border-t border-black/15 pt-6 sm:mt-16 sm:pt-8">
-        <div className="grid gap-6 sm:gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-14">
-          <p className="text-[0.65rem] tracking-[0.14em] text-black/45">
-            Informações
-          </p>
-          <div className="max-w-2xl">
-            <p className="text-lg leading-relaxed text-black/70 sm:text-xl">
-              {content.informationText}
+      {content.informationText.trim().length > 0 && (
+        <div className="mt-12 border-t border-black/15 pt-6 sm:mt-16 sm:pt-8">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-14">
+            <p className="text-[0.65rem] tracking-[0.14em] text-black/45">
+              Informações
             </p>
-            <Link
-              href="/biografia"
-              className="mt-8 inline-flex items-center gap-2 text-xs tracking-[0.08em] text-black hover:opacity-55"
-            >
-              Conhecer a biografia <span aria-hidden="true">→</span>
-            </Link>
+            <div className="max-w-2xl">
+              <p className="text-lg leading-relaxed text-black/70 sm:text-xl">
+                {content.informationText}
+              </p>
+              <Link
+                href="/biografia"
+                className="mt-8 inline-flex items-center gap-2 text-xs tracking-[0.08em] text-black hover:opacity-55"
+              >
+                Conhecer a biografia <span aria-hidden="true">→</span>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="mt-12 border-t border-black/15 pt-6 sm:mt-16 sm:pt-8">
         <div className="grid gap-6 sm:gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-14">

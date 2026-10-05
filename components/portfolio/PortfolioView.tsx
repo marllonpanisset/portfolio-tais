@@ -5,13 +5,6 @@ import { Heading } from "@/components/ui/Heading";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import type { PortfolioPageContent } from "@/lib/cms/content-types";
 
-/** Seed used when the CMS payload is missing or invalid; mirrors the page's current standalone content. */
-export const fallbackPortfolioContent: PortfolioPageContent = {
-  eyebrow: "SELEÇÃO DE TRABALHOS",
-  title: "Portfólio",
-  description: "Projetos do portfólio de Taís.",
-};
-
 export function PortfolioView({
   content,
   asPreview = false,

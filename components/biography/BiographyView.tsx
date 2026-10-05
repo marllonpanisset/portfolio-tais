@@ -6,20 +6,6 @@ import { PageWrapper } from "@/components/layout/PageWrapper";
 import type { BiographyPageContent } from "@/lib/cms/content-types";
 import { resolveMediaUrl } from "@/lib/media-url";
 
-/** Seed used when the CMS payload is missing or invalid; mirrors the page's current standalone content. */
-export const fallbackBiographyContent: BiographyPageContent = {
-  publicName: "Taís",
-  profileImage: "/perfil.jpg",
-  introduction:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  biography:
-    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus, nulla gravida orci a odio.",
-  about: [
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-    "Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.",
-  ],
-};
-
 export function BiographyView({
   content,
   asPreview = false,
