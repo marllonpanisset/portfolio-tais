@@ -9,6 +9,13 @@ export type Json =
 export type MediaKind = "image" | "video";
 export type MediaSource = "upload" | "youtube";
 
+/**
+ * Role de um usuário em um site da plataforma.
+ * Espelha o enum public.membership_role criado em
+ * supabase/migrations/20261005120000_create_identity_foundation.sql
+ */
+export type MembershipRole = "owner" | "editor" | "viewer";
+
 export interface Database {
   public: {
     Tables: {
@@ -247,10 +254,103 @@ export interface Database {
         };
         Relationships: [];
       };
+      profiles: {
+        Row: {
+          user_id: string;
+          display_name: string | null;
+          avatar_url: string | null;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          display_name?: string | null;
+          avatar_url?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          display_name?: string | null;
+          avatar_url?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      sites: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          slug?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      memberships: {
+        Row: {
+          id: string;
+          user_id: string;
+          site_id: string;
+          role: MembershipRole;
+          invited_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          site_id: string;
+          role?: MembershipRole;
+          invited_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          site_id?: string;
+          role?: MembershipRole;
+          invited_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "memberships_invited_by_fkey";
+            columns: ["invited_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "memberships_site_id_fkey";
+            columns: ["site_id"];
+            isOneToOne: false;
+            referencedRelation: "sites";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "memberships_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
-    Enums: Record<string, never>;
+    Enums: {
+      membership_role: MembershipRole;
+    };
     CompositeTypes: Record<string, never>;
   };
 }
@@ -282,3 +382,19 @@ export type SiteSettingRow = Database["public"]["Tables"]["site_settings"]["Row"
 export type PageRow = Database["public"]["Tables"]["pages"]["Row"];
 export type PageInsert = Database["public"]["Tables"]["pages"]["Insert"];
 export type PageUpdate = Database["public"]["Tables"]["pages"]["Update"];
+
+// ---------------------------------------------------------------------------
+// Identity Foundation (profiles, sites, memberships)
+// ---------------------------------------------------------------------------
+
+export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+export type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"];
+export type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
+
+export type SiteRow = Database["public"]["Tables"]["sites"]["Row"];
+export type SiteInsert = Database["public"]["Tables"]["sites"]["Insert"];
+export type SiteUpdate = Database["public"]["Tables"]["sites"]["Update"];
+
+export type MembershipRow = Database["public"]["Tables"]["memberships"]["Row"];
+export type MembershipInsert = Database["public"]["Tables"]["memberships"]["Insert"];
+export type MembershipUpdate = Database["public"]["Tables"]["memberships"]["Update"];

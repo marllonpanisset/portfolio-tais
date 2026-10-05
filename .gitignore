@@ -39,6 +39,9 @@ coverage/
 # local tooling
 *.local
 
+# supabase CLI (link local, cache de versões, connection strings)
+supabase/.temp/
+
 # temporary
 tmp/
 temp/
