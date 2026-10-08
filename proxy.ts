@@ -47,16 +47,16 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    const { data: isTaisOwner, error } = await supabase.rpc("is_tais_site_owner");
-    if (error || isTaisOwner !== true) {
+    const { data: isSiteOwner, error } = await supabase.rpc("is_site_owner");
+    if (error || isSiteOwner !== true) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
   if (isLoginRoute && isAuthenticated) {
-    const { data: isTaisOwner, error } = await supabase.rpc("is_tais_site_owner");
+    const { data: isSiteOwner, error } = await supabase.rpc("is_site_owner");
     return NextResponse.redirect(
-      new URL(error || isTaisOwner !== true ? "/" : "/admin", request.url),
+      new URL(error || isSiteOwner !== true ? "/" : "/admin", request.url),
     );
   }
 

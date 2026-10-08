@@ -348,7 +348,7 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: {
-      is_tais_site_owner: {
+      is_site_owner: {
         Args: Record<string, never>;
         Returns: boolean;
       };
