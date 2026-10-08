@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { HomeRenderer } from "@/components/portfolio/HomeRenderer";
-import { siteConfig } from "@/config/client-site";
 import { getHomeContent } from "@/lib/home-content-source";
 
 export const metadata: Metadata = {
   title: "Portfólio",
-  description: siteConfig.description,
+  description: "Trabalhos apresentados no portfólio de Taís.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Portfólio | Taís",
+    description: "Trabalhos apresentados no portfólio de Taís.",
+    url: "/",
+  },
 };
 
 export default async function HomePage() {

@@ -9,7 +9,13 @@ import { parseCmsPageContent } from "@/lib/cms/content-validation";
 
 export const metadata: Metadata = {
   title: "Contato",
-  description: `Canais de contato de ${siteConfig.author.name}.`,
+  description: `Página de contato de ${siteConfig.author.name}.`,
+  alternates: { canonical: "/contato" },
+  openGraph: {
+    title: `Contato | ${siteConfig.author.name}`,
+    description: `Página de contato de ${siteConfig.author.name}.`,
+    url: "/contato",
+  },
 };
 
 export default async function ContactPage() {

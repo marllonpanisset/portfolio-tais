@@ -19,13 +19,26 @@ export async function generateMetadata({ params }: WorkPageProps): Promise<Metad
   const result = await getPublishedProjectBySlug(slug);
 
   if (result.data) {
+    const description =
+      result.data.description ??
+      `Detalhes de ${result.data.title} no portfólio de Taís.`;
+
     return {
       title: result.data.title,
-      description: result.data.description ?? undefined,
+      description,
+      alternates: { canonical: `/trabalhos/${result.data.slug}` },
+      openGraph: {
+        title: `${result.data.title} | Taís`,
+        description,
+        url: `/trabalhos/${result.data.slug}`,
+      },
     };
   }
 
-  return { title: "Projeto não encontrado" };
+  return {
+    title: "Trabalho não encontrado",
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function WorkPage({ params }: WorkPageProps) {

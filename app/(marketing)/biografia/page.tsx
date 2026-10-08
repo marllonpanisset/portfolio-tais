@@ -12,6 +12,12 @@ import { isStoragePath } from "@/lib/media-url";
 export const metadata: Metadata = {
   title: "Biografia",
   description: `Biografia de ${siteConfig.author.name}.`,
+  alternates: { canonical: "/biografia" },
+  openGraph: {
+    title: `Biografia | ${siteConfig.author.name}`,
+    description: `Biografia de ${siteConfig.author.name}.`,
+    url: "/biografia",
+  },
 };
 
 export default async function BiographyPage() {

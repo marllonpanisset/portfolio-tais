@@ -7,8 +7,6 @@ import { siteConfig } from "@/config/client-site";
 import { personJsonLd, websiteJsonLd } from "@/lib/structured-data";
 import "./globals.css";
 
-const defaultTitle = `${siteConfig.name} — Portfólio profissional`;
-
 /**
  * Global metadata provides default SEO information for all routes.
  *
@@ -27,8 +25,8 @@ export const metadata: Metadata = {
   },
 
   title: {
-    default: defaultTitle,
-    template: `%s — ${siteConfig.name}`,
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.name}`,
   },
 
   description: siteConfig.description,
@@ -43,6 +41,10 @@ export const metadata: Metadata = {
   creator: siteConfig.author.name,
 
   publisher: siteConfig.name,
+
+  alternates: {
+    canonical: "/",
+  },
 
   formatDetection: {
     address: false,
@@ -65,7 +67,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteConfig.url,
-    title: defaultTitle,
+    title: siteConfig.title,
     description: siteConfig.description,
     locale: siteConfig.locale.replace("-", "_"),
     siteName: siteConfig.name,
@@ -73,7 +75,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary",
-    title: defaultTitle,
+    title: siteConfig.title,
     description: siteConfig.description,
   },
 };

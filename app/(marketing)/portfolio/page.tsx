@@ -9,7 +9,13 @@ import { Container } from "@/components/ui/Container";
 
 export const metadata: Metadata = {
   title: "Portfólio",
-  description: "Projetos do portfólio de Taís.",
+  description: "Projetos apresentados no portfólio de Taís.",
+  alternates: { canonical: "/portfolio" },
+  openGraph: {
+    title: "Portfólio | Taís",
+    description: "Projetos apresentados no portfólio de Taís.",
+    url: "/portfolio",
+  },
 };
 
 export default async function PortfolioPage() {
