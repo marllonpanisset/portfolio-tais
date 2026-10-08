@@ -20,6 +20,12 @@ export const metadata: Metadata = {
 
   applicationName: siteConfig.name,
 
+  icons: {
+    icon: "/perfil.jpg",
+    shortcut: "/perfil.jpg",
+    apple: "/perfil.jpg",
+  },
+
   title: {
     default: defaultTitle,
     template: `%s — ${siteConfig.name}`,

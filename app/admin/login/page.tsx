@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { LoginForm } from "./LoginForm";
@@ -36,21 +35,12 @@ export default async function LoginPage() {
             />
 
             <div className="relative z-10 flex items-center gap-3">
-              <Image
-                src="/android-chrome-512x512.png"
-                alt=""
-                aria-hidden="true"
-                width={512}
-                height={512}
-                className="h-11 w-11 rounded-sm object-cover"
-                priority
-              />
               <div>
                 <p className="font-display text-base font-bold tracking-[0.16em]">
                   CONJUGA
                 </p>
-                <p className="mt-1 text-[0.62rem] uppercase tracking-[0.17em] text-white/55">
-                  Administração de sites
+                <p className="mt-1 max-w-xs text-xs leading-5 text-white/60">
+                  Engenharia de software para empresas de serviços.
                 </p>
               </div>
             </div>
