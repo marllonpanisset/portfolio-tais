@@ -35,8 +35,19 @@ export async function Footer() {
           <SocialLinks settings={settings} iconClassName="h-5 w-5" />
         </div>
 
-        <div className="mt-9 border-t border-black/15 pt-4 text-[0.65rem] text-black/50">
+        <div className="mt-9 flex flex-col gap-4 border-t border-black/15 pt-4 text-[0.65rem] text-black/50 sm:flex-row sm:items-center sm:justify-between">
           © 2026 TAIS · Todos os direitos reservados.
+          <span>
+            Desenvolvido por:{" "}
+            <a
+              href="https://www.conjuga.com.br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-black transition-opacity hover:opacity-65 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            >
+              CONJUGA
+            </a>
+          </span>
         </div>
       </Container>
     </footer>

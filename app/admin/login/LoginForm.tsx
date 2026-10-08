@@ -37,18 +37,18 @@ export function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-lg border border-border/70 bg-surface-elevated/50 p-6"
+      className="space-y-6"
     >
       {error && (
-        <div className="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <div className="border border-red-800/15 bg-red-50 px-4 py-3 text-sm leading-5 text-red-800">
           {error}
         </div>
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-text-primary"
+          className="block text-[0.68rem] font-semibold uppercase tracking-[0.13em] text-text-secondary"
         >
           Email
         </label>
@@ -59,15 +59,15 @@ export function LoginForm() {
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-md border border-border/70 bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary/50 focus:border-signal focus:outline-none focus:ring-1 focus:ring-signal"
+          className="h-12 w-full rounded-none border border-black/15 bg-white px-4 text-sm text-text-primary placeholder:text-text-secondary/45 transition-colors focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
           placeholder="admin@exemplo.com"
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-text-primary"
+          className="block text-[0.68rem] font-semibold uppercase tracking-[0.13em] text-text-secondary"
         >
           Senha
         </label>
@@ -78,7 +78,7 @@ export function LoginForm() {
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-md border border-border/70 bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary/50 focus:border-signal focus:outline-none focus:ring-1 focus:ring-signal"
+          className="h-12 w-full rounded-none border border-black/15 bg-white px-4 text-sm text-text-primary placeholder:text-text-secondary/45 transition-colors focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
           placeholder="••••••••"
         />
       </div>
@@ -86,7 +86,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-gradient-to-b from-signal-strong to-signal px-4 py-2 text-sm font-medium text-white transition-all hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-2 flex h-12 w-full items-center justify-center bg-[#111111] px-5 text-sm font-medium tracking-[0.01em] text-white transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? "Entrando..." : "Entrar"}
       </button>
