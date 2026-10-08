@@ -347,7 +347,12 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      is_tais_site_owner: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+    };
     Enums: {
       membership_role: MembershipRole;
     };

@@ -4,7 +4,6 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import type { BiographyPageContent } from "@/lib/cms/content-types";
-import { resolveMediaUrl } from "@/lib/media-url";
 
 export function BiographyView({
   content,
@@ -27,7 +26,7 @@ export function BiographyView({
         <div className="relative aspect-square w-full max-w-[520px] bg-[#eeeeec]">
           {content.profileImage.trim().length > 0 && (
             <Image
-              src={resolveMediaUrl(content.profileImage)}
+              src={content.profileImage}
               alt={`Foto de perfil de ${content.publicName}`}
               fill
               unoptimized

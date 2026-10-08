@@ -6,6 +6,8 @@ import { Container } from "@/components/ui/Container";
 import { siteConfig } from "@/config/client-site";
 import { getPublishedPageBySlug } from "@/lib/cms/queries";
 import { parseCmsPageContent } from "@/lib/cms/content-validation";
+import { getMediaUrl } from "@/lib/cms/storage";
+import { isStoragePath } from "@/lib/media-url";
 
 export const metadata: Metadata = {
   title: "Biografia",
@@ -34,5 +36,9 @@ export default async function BiographyPage() {
     );
   }
 
-  return <BiographyView content={content} />;
+  const profileImage = isStoragePath(content.profileImage)
+    ? await getMediaUrl(content.profileImage)
+    : content.profileImage;
+
+  return <BiographyView content={{ ...content, profileImage }} />;
 }

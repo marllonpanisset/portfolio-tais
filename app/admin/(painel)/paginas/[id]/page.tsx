@@ -10,6 +10,8 @@ import {
   listPublishedProjects,
 } from "@/lib/cms/queries";
 import { parseCmsPageContent } from "@/lib/cms/content-validation";
+import { getMediaUrl } from "@/lib/cms/storage";
+import { isStoragePath } from "@/lib/media-url";
 import { getFeaturedHomeContent } from "@/lib/home-content-source";
 import type {
   BiographyPageContent,
@@ -132,12 +134,18 @@ export default async function EditPagePage({ params }: EditPagePageProps) {
 
   if (page.slug === "biografia") {
     const pageContent = parseCmsPageContent("biography", page.content);
+    const initialProfileImageUrl = pageContent
+      ? isStoragePath(pageContent.profileImage)
+        ? await getMediaUrl(pageContent.profileImage)
+        : pageContent.profileImage
+      : "";
 
     return (
       <BiographyPageEditor
         pageId={page.id}
         isPublished={page.is_published}
         initialContent={pageContent ?? EMPTY_BIOGRAPHY_CONTENT}
+        initialProfileImageUrl={initialProfileImageUrl}
         previewHeader={<Header />}
         previewFooter={<Footer />}
       />

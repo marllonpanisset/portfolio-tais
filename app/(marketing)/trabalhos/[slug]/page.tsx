@@ -6,17 +6,11 @@ import { Container } from "@/components/ui/Container";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { getPublishedProjectBySlug, getProjectMedia } from "@/lib/cms/queries";
 import { parseYouTubeUrl } from "@/lib/cms/media";
+import { getMediaUrl } from "@/lib/cms/storage";
 import type { MediaRow } from "@/types/database";
 
 interface WorkPageProps {
   params: Promise<{ slug: string }>;
-}
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const BUCKET_NAME = "project-media";
-
-function getPublicUrl(storagePath: string): string {
-  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${storagePath}`;
 }
 
 export async function generateMetadata({ params }: WorkPageProps): Promise<Metadata> {
@@ -47,17 +41,19 @@ export default async function WorkPage({ params }: WorkPageProps) {
   const mediaResult = await getProjectMedia(project.id);
   const cmsMedia: MediaRow[] = mediaResult.data ?? [];
 
-  const media = cmsMedia.map((item) => ({
-    id: item.id,
-    kind: item.kind,
-    src:
-      item.kind === "image" && item.storage_path
-        ? getPublicUrl(item.storage_path)
-        : item.external_url ?? "",
-    alt: item.alt ?? undefined,
-    caption: item.caption ?? undefined,
-    order: item.sort_order,
-  }));
+  const media = await Promise.all(
+    cmsMedia.map(async (item) => ({
+      id: item.id,
+      kind: item.kind,
+      src:
+        item.kind === "image" && item.storage_path
+          ? await getMediaUrl(item.storage_path)
+          : item.external_url ?? "",
+      alt: item.alt ?? undefined,
+      caption: item.caption ?? undefined,
+      order: item.sort_order,
+    })),
+  );
 
   return (
     <PageWrapper>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProjectById, getProjectCategories, listProjectMedia } from "@/lib/cms/queries";
+import { getMediaUrl } from "@/lib/cms/storage";
 import { ProjectForm } from "../ProjectForm";
 import { MediaManager } from "./MediaManager";
 
@@ -39,7 +40,15 @@ export default async function EditProjectPage({ params, searchParams }: EditProj
 
   const project = projectResult.data;
   const projectCategories = categoriesResult.data ?? [];
-  const media = mediaResult.data ?? [];
+  const media = await Promise.all(
+    (mediaResult.data ?? []).map(async (item) => ({
+      ...item,
+      signedUrl:
+        item.source === "upload" && item.storage_path
+          ? await getMediaUrl(item.storage_path)
+          : null,
+    })),
+  );
 
   return (
     <div className="space-y-6">

@@ -40,16 +40,24 @@ export async function proxy(request: NextRequest) {
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
   const isLoginRoute = request.nextUrl.pathname === "/admin/login";
 
-  if (isAdminRoute && !isLoginRoute && !isAuthenticated) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin/login";
-    return NextResponse.redirect(url);
+  if (isAdminRoute && !isLoginRoute) {
+    if (!isAuthenticated) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      return NextResponse.redirect(url);
+    }
+
+    const { data: isTaisOwner, error } = await supabase.rpc("is_tais_site_owner");
+    if (error || isTaisOwner !== true) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
   if (isLoginRoute && isAuthenticated) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin";
-    return NextResponse.redirect(url);
+    const { data: isTaisOwner, error } = await supabase.rpc("is_tais_site_owner");
+    return NextResponse.redirect(
+      new URL(error || isTaisOwner !== true ? "/" : "/admin", request.url),
+    );
   }
 
   return supabaseResponse;

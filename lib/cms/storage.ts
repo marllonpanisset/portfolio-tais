@@ -60,12 +60,19 @@ export async function removeImage(path: string): Promise<void> {
 }
 
 /**
- * Gets the public URL for a media file.
+ * Creates a time-limited URL for a media file the current session may access.
+ * RLS permits public signing only for published media and owner signing for drafts.
  */
 export async function getMediaUrl(path: string): Promise<string> {
   const supabase = await createClient();
 
-  const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
+  const { data, error } = await supabase.storage
+    .from(BUCKET_NAME)
+    .createSignedUrl(path, 60 * 60);
 
-  return data.publicUrl;
+  if (error || !data?.signedUrl) {
+    throw new Error(`Failed to sign media URL: ${error?.message ?? "Unknown error"}`);
+  }
+
+  return data.signedUrl;
 }

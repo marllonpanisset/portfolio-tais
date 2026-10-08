@@ -15,14 +15,7 @@ import type { MediaRow } from "@/types/database";
 
 interface MediaManagerProps {
   projectId: string;
-  media: MediaRow[];
-}
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const BUCKET_NAME = "project-media";
-
-function getPublicUrl(storagePath: string): string {
-  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${storagePath}`;
+  media: (MediaRow & { signedUrl: string | null })[];
 }
 
 function getYouTubeThumbnailUrl(externalUrl: string): string | null {
@@ -250,9 +243,9 @@ export function MediaManager({ projectId, media }: MediaManagerProps) {
             >
               {/* Thumbnail / Preview */}
               <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-surface-elevated">
-                {item.kind === "image" && item.storage_path ? (
+                {item.kind === "image" && item.signedUrl ? (
                   <Image
-                    src={getPublicUrl(item.storage_path)}
+                    src={item.signedUrl}
                     alt={item.alt ?? "Imagem do projeto"}
                     fill
                     unoptimized

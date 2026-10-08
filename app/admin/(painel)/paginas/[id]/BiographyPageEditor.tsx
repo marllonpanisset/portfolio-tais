@@ -5,7 +5,6 @@ import Link from "next/link";
 import type { Route } from "next";
 import { BiographyView } from "@/components/biography/BiographyView";
 import type { BiographyPageContent } from "@/lib/cms/content-types";
-import { resolveMediaUrl } from "@/lib/media-url";
 import { saveBiographyContent, uploadBiographyImage } from "./actions";
 import { PublishToggle } from "./PublishToggle";
 
@@ -13,6 +12,7 @@ interface BiographyPageEditorProps {
   pageId: string;
   isPublished: boolean;
   initialContent: BiographyPageContent;
+  initialProfileImageUrl: string;
   previewHeader: ReactNode;
   previewFooter: ReactNode;
 }
@@ -21,6 +21,7 @@ export function BiographyPageEditor({
   pageId,
   isPublished,
   initialContent,
+  initialProfileImageUrl,
   previewHeader,
   previewFooter,
 }: BiographyPageEditorProps) {
@@ -29,6 +30,7 @@ export function BiographyPageEditor({
     { type: "success" | "error"; message: string } | null
   >(null);
   const [localContent, setLocalContent] = useState<BiographyPageContent>(initialContent);
+  const [profileImageUrl, setProfileImageUrl] = useState(initialProfileImageUrl);
   const [isUploading, startUploadTransition] = useTransition();
   const [uploadFeedback, setUploadFeedback] = useState<
     { type: "success" | "error"; message: string } | null
@@ -54,6 +56,7 @@ export function BiographyPageEditor({
       }
 
       setLocalContent((prev) => ({ ...prev, profileImage: result.data.storagePath }));
+      setProfileImageUrl(result.data.url);
       setUploadFeedback({
         type: "success",
         message: "Imagem enviada. Clique em Salvar para persistir.",
@@ -170,7 +173,7 @@ export function BiographyPageEditor({
                   <div className="relative aspect-square w-full max-w-[180px] overflow-hidden rounded-md bg-surface">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={resolveMediaUrl(localContent.profileImage)}
+                      src={profileImageUrl}
                       alt={`Foto de perfil de ${localContent.publicName}`}
                       className="h-full w-full object-cover"
                     />
@@ -188,6 +191,7 @@ export function BiographyPageEditor({
                       type="button"
                       onClick={() => {
                         updateField("profileImage", "");
+                        setProfileImageUrl("");
                         setUploadFeedback(null);
                       }}
                       disabled={isUploading}
@@ -297,7 +301,10 @@ export function BiographyPageEditor({
         >
           <div className="mx-auto min-h-full max-w-6xl overflow-hidden bg-white shadow-sm">
             {previewHeader}
-            <BiographyView content={localContent} asPreview />
+            <BiographyView
+              content={{ ...localContent, profileImage: profileImageUrl }}
+              asPreview
+            />
             {previewFooter}
           </div>
         </section>
