@@ -1,43 +1,42 @@
 # Estado atual do projeto
 
-Última verificação documental: 2026-09-27. Baseado na auditoria da migração e no checkout disponível nesta etapa. Informações externas são identificadas como não verificáveis localmente.
+Última verificação documental: 2026-10-14 (HEAD `50870dd`). Baseado no código do checkout. Informações externas são identificadas como não verificáveis localmente.
 
 ## Projeto e migração
 
-O repositório contém a base técnica clonada do site institucional Conjuga e está sendo adaptado para `portfolio-tais`. A estratégia propõe um CORE reutilizável, mas a separação de código em pacotes ou diretórios CORE/cliente ainda não foi implementada. O site público continua em sua forma herdada; CMS e administração estão em planejamento.
+O repositório contém o portfólio de Taís, originado de base técnica reutilizável da Conjuga e agora com CMS próprio implementado sobre Supabase. A estratégia propõe um CORE reutilizável, mas a separação de código em pacotes ou diretórios CORE/cliente ainda não foi implementada.
 
-Na fundação, os módulos `config/client-site.ts` e `config/client-navigation.ts` passaram a identificar configuração de cliente; o nome do pacote foi alinhado para `portfolio-tais`. Foi adicionado `types/portfolio.ts` e removidos componentes sem consumidores diretos. A Home, biografia, contato, navegação, metadata, SEO estrutural, sitemap e tokens visuais foram adaptados ao portfolio. A Home exibe doze projetos demonstrativos com imagens temporárias de `picsum.photos`; `content/portfolio.ts` inclui três imagens por projeto para validar o detalhe. Substituir esses dados e URLs por material aprovado antes da publicação. Biografia e contatos seguem placeholders sem dados inventados. A paleta é preto e branco; nenhum ativo herdado de marca é usado pelo layout público.
+`config/client-site.ts` e `config/client-navigation.ts` identificam a configuração de cliente, ajustada ao portfólio (nome "Taís", navegação HOME/BIOGRAFIA/PORTFÓLIO/CONTATO). `types/database.ts` espelha o schema Supabase e `types/portfolio.ts` mantém os tipos de domínio. Home, biografia, portfólio, contato, detalhe de trabalho, navegação, metadata, SEO estrutural, sitemap e robots leem exclusivamente conteúdo publicado no CMS; sem registro publicado ou com payload inválido, rendem estados vazios honestos, sem fallback demonstrativo. Biografia e contatos não contêm dados inventados. Crédito à Conjuga permanece no rodapé público (`components/layout/Footer.tsx`) e marca Conjuga na tela de login do admin (`app/admin/login/LoginForm.tsx`), aguardando decisão com material aprovado.
 
 ## Stack observada
 
 - Node.js `24.x` declarado em `package.json`.
-- Next.js 16 App Router, React 19 e TypeScript 5.
-- Tailwind CSS 4, Framer Motion 11 e Lucide.
-- MDX configurado e usado pelo conteúdo editorial atual.
-- Supabase JS e cliente server-side mantidos para integrações futuras; sem uso de persistência pelo portfolio atual.
+- Next.js 16 App Router (`typedRoutes: true`, `pageExtensions: ["ts", "tsx"]`), React 19 e TypeScript 5.
+- Tailwind CSS 4, Framer Motion 11, Lucide e Simple Icons.
+- Supabase (`@supabase/ssr`, `@supabase/supabase-js`) em uso pelo CMS: clientes server/browser, Auth, RLS e Storage.
+- Sem MDX: nenhuma dependência, nenhum arquivo `*.mdx`, nenhum diretório `content/`.
 
 ## Implementação atual
 
-- Rotas públicas principais para início, biografia, portfolio, contato e detalhe de trabalho, além de rotas legais herdadas. Rotas antigas de sobre, projetos, serviços, soluções e blog são redirecionadas. Permanecem handlers de sitemap e robots. A página `/contato` é informativa e não tem formulário.
-- Componentes em `components/`, configuração em `config/`, conteúdo em `content/`, lógica em `lib/`, tipos em `types/` e migração em `supabase/migrations/`.
-- O formulário, a API de contato e o fluxo de leads herdados foram removidos. A migration local de `public.leads` permanece no repositório, mas não é consumida pelo portfolio atual.
-- Analytics e consentimento continuam como código legado, mas não são montados no layout público nesta fase. Destino final ainda não decidido.
-- Rotas legadas de serviços, soluções, blog, sobre e projetos têm redirects para a experiência pública atual. Termos e política de privacidade continuam acessíveis com conteúdo Conjuga e exigem revisão própria antes da publicação.
-- A migration herdada `supabase/migrations/20260728213159_create_leads.sql` declara `public.leads`, constraints, índices e RLS, sem policies. Ela não foi alterada nesta etapa; estado remoto e aplicação da migration não foram verificados.
-- Não foi identificada implementação de CMS, Dashboard, autenticação de usuários da aplicação ou Storage do CMS.
-
-O conteúdo demonstrativo do portfolio não contém clientes ou créditos, mas ainda usa títulos e anos de exemplo e imagens externas; não deve ser tratado como portfólio real. As rotas legais herdadas ainda contêm conteúdo Conjuga e requerem decisão antes de publicação. O CMS e a persistência do portfolio ainda não existem.
+- Rotas públicas: `/`, `/biografia`, `/portfolio`, `/contato` e `/trabalhos/[slug]`, além de sitemap e robots gerados do CMS. A página `/contato` é informativa e não tem formulário. Não há rotas de API, rotas legais herdadas, blog ou redirects legados.
+- Rotas administrativas em `app/admin/`: `/admin/login` (email + senha via `signInWithPassword`), `/admin` (dashboard), `/admin/projetos` (CRUD + mídia por projeto), `/admin/paginas` (edição por template + publicação + seleção do portfólio), `/admin/configuracoes` (links globais) e `/admin/logout`. `proxy.ts` protege `/admin/:path*` com sessão Supabase e RPC `is_site_owner()`.
+- CMS: templates `home`, `biography`, `contact`, `global` e `portfolio` (`lib/cms/content-types.ts`); validação em `lib/cms/content-validation.ts` e `lib/cms/media.ts`; tabelas `projects`, `categories`, `project_categories`, `media`, `pages`, `portfolio_projects`, `site_settings`, `profiles`, `sites` e `memberships`; função `is_site_owner()`; bucket `project-media` (upload de até 10 MB nos tipos jpeg/png/webp/gif/avif, vídeo via YouTube, URLs assinadas de 1 h).
+- Componentes em `components/`, configuração em `config/`, lógica em `lib/`, tipos em `types/` e 19 migrations SQL em `supabase/migrations/`.
+- Fluxo de leads herdado removido por completo: sem formulário, endpoint, serviço ou migration de `leads` no checkout. Sem analytics ou consentimento no layout.
+- `contact_messages` e seção `/mensagens` não existem; mídia é gerenciada por projeto, sem seção `/midia` própria.
 
 ## Configuração e limites conhecidos
 
-As referências de ambiente encontradas no código incluem `NEXT_PUBLIC_SITE_URL` e credenciais Supabase. Valores e ambientes não foram verificados. A URL do site recua para `http://localhost:3000` se `NEXT_PUBLIC_SITE_URL` não estiver configurada; domínio de produção não foi informado. Não foi encontrado `.env.example`.
+As variáveis lidas pelo código são `NEXT_PUBLIC_SITE_URL` (opcional, com fallback `http://localhost:3000`), `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (exigidas; a ausência lança erro em `lib/supabase/*` e `proxy.ts`). `SUPABASE_SECRET_KEY` consta em `.env.example` mas não é lida pelo código da aplicação; `TEST_EMAIL`/`TEST_PASSWORD` constam em `.env.local` sem leitura no código. Valores e ambientes não foram verificados; domínio de produção não foi informado.
 
-A migration local de leads registra um modelo herdado que não é usado pelo portfolio atual. A presença de RLS nela não confirma configuração remota nem policies hospedadas.
+`supabase/.temp/` contém metadados locais do CLI (não inspecionados; podem conter dados sensíveis). A presença de migrations e de metadados locais não confirma projeto remoto, aplicação de migrations, bucket, policies ou usuário owner. Estado remoto desconhecido.
 
 ## Verificações registradas
 
-Na auditoria inicial, lint e `npx tsc --noEmit` terminaram sem erros. Na fundação, lint e typecheck passaram após regenerar os tipos de rota com `npx next typegen`. Em 2026-09-27, os ajustes da galeria pública passaram em lint, `npx tsc --noEmit` e `git diff --check`, após regenerar os tipos de rota. Não há script `test`. O build da etapa pública anterior permaneceu sem saída após iniciar compilação, sem processo Node ativo visível, e foi interrompido; resultado inconclusivo. Não há navegador instalado no ambiente para capturar visualmente os viewports solicitados.
+Histórico: na auditoria inicial, lint e `npx tsc --noEmit` terminaram sem erros. Na fundação, lint e typecheck passaram após regenerar os tipos de rota com `npx next typegen`. Em 2026-09-27, os ajustes da galeria pública passaram em lint, `npx tsc --noEmit` e `git diff --check`, após regenerar os tipos de rota. Não há script `test`. O build da etapa pública anterior permaneceu sem saída após iniciar compilação, sem processo Node ativo visível, e foi interrompido; resultado inconclusivo. Não há navegador instalado no ambiente para capturas visuais de viewports.
+
+Em 2026-10-14, a auditoria documental alinhou `README.md`, `docs/ARCHITECTURE.md`, `docs/project-state.md`, `docs/CMS.md`, `docs/development/setup.md` e `.env.example` ao HEAD `50870dd`. Resultados de lint, typecheck e build desta etapa estão registrados na entrega da auditoria; `docs/architecture/overview.md` e `docs/CMS-FRONTEND-MAP.md` seguem descrevendo a base pré-CMS e aguardam etapa própria.
 
 ## Git e operação
 
-Na auditoria inicial, a branch verificada era `main`, com remote `origin` apontando para o repositório `portfolio-tais`; o checkout estava limpo. Não foram identificadas tags de release, CI/CD nem configuração de provedor de deploy. Estado de produção, secrets, migrations remotas e domínio ativo são desconhecidos.
+Branch `main` (HEAD `50870dd`); remotes observados `origin` (portfolio-tais) e `upstream` (conjuga-core), sem alteração nesta etapa. Sem tags e sem CI (sem `.github/workflows`). O diretório `.vercel/` local não comprova deploy. Estado de produção, secrets, migrations remotas e domínio ativo desconhecidos. Sem commit, push ou deploy.

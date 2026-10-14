@@ -1,33 +1,35 @@
 # Visão técnica da base existente
 
-O princípio de separação entre infraestrutura reutilizável, projeto cliente, conteúdo e dados está em [`../ARCHITECTURE.md`](../ARCHITECTURE.md). Este documento registra detalhes técnicos verificados na base herdada; não afirma que a arquitetura final já foi implementada.
+O princípio de separação entre infraestrutura reutilizável, projeto cliente, conteúdo e dados está em [`../ARCHITECTURE.md`](../ARCHITECTURE.md). Este documento registra detalhes técnicos verificados no HEAD atual; trechos históricos da base pré-CMS foram substituídos ou marcados como tal.
 
 ## Aplicação e rotas atuais
 
-A aplicação usa Next.js App Router, React e TypeScript. `next.config.ts` habilita extensões `.ts`, `.tsx` e `.mdx`, rotas tipadas, formatos de imagem AVIF/WebP e redirects permanentes antigos de serviços. Não foi identificado backend separado. A API de contato é server-side dentro do Next.js.
+A aplicação usa Next.js 16 App Router (`typedRoutes: true`, `pageExtensions: ["ts", "tsx"]`), React 19 e TypeScript 5. `next.config.ts` declara formatos de imagem AVIF/WebP e não contém redirects, rewrites ou headers. Não há backend separado nem rotas de API (`route.ts` inexistente). Não há MDX em dependências, arquivos ou configuração.
 
-As rotas existentes incluem início, contato, sobre, serviços e slugs, projetos e slugs, soluções e nichos, termos, política de privacidade, blog e slugs, sitemap e robots. A página `/contato` atual é informativa; o endpoint `POST /api/contato` foi removido junto com o formulário de leads herdado.
+As rotas existentes são as públicas `/`, `/biografia`, `/portfolio`, `/contato` e `/trabalhos/[slug]`, as administrativas `/admin/*` e os handlers de sitemap e robots gerados do CMS. Não há rotas legais herdadas, blog, serviços, soluções ou sobre. A página `/contato` é informativa e não tem formulário.
 
 ## Formulário e persistência de leads
 
-O formulário, endpoint, validação, serviço, repositório e notificação por webhook do fluxo herdado foram removidos do código da aplicação. A migration `supabase/migrations/20260728213159_create_leads.sql` permanece no repositório sem ser aplicada ou consumida pelo portfolio atual.
+Histórico: o formulário, endpoint, validação e fluxo de leads herdados foram removidos do código. Estado atual: nenhuma migration de `leads` existe em `supabase/migrations/` (somente as 19 do CMS/identidade) e nenhum código de contato, serviço ou repositório de leads permanece. Não há analytics nem consentimento no layout.
 
 ## Banco e segurança observados
 
-Há uma migration que cria `public.leads`, constraints e índices e habilita RLS, sem declarar policies. O estado remoto não foi verificado; não presumir que a migration foi aplicada ou que RLS/policies estejam configuradas no projeto hospedado.
+As 19 migrations versionadas criam `projects`, `categories`, `project_categories`, `media`, `pages`, `portfolio_projects`, `site_settings`, `profiles`, `sites` e `memberships`, além da função `is_site_owner()` e do bucket `project-media` (limite de 10 MB, tipos jpeg/png/webp/gif/avif). RLS restringe a leitura pública a conteúdo publicado e a escrita ao site owner (`memberships.role = 'owner'`, policies `Site owner manages *`). O acesso a objetos do Storage segue o modelo de URLs assinadas (`Public can sign published project media`, objetos gerenciados pelo owner).
 
-`lib/supabase/server.ts` importa `server-only` e mantém a configuração do cliente para integrações futuras. O portfolio atual não usa o cliente para persistência. O código auditado não contém Auth de usuários da aplicação nem Storage do CMS.
+`lib/supabase/server.ts` e `lib/supabase/client.ts` (`@supabase/ssr`) exigem `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Auth de usuários é por email + senha (`signInWithPassword` em `/admin/login`); autorização do painel por `proxy.ts` (matcher `/admin/:path*`) + RPC `is_site_owner()`. O estado remoto não foi verificado; não presumir que migrations foram aplicadas ou que Auth/RLS/Storage estejam configurados no projeto hospedado.
 
 ## Integrações
 
-O código mantém o cliente Supabase para uso futuro. A configuração efetiva de qualquer ambiente não é verificável neste checkout. Não foi identificado provedor dedicado de e-mail/CRM.
+O Supabase é a integração efetiva (Auth, Postgres/RLS, Storage). A configuração de qualquer ambiente remoto não é verificável neste checkout. Não foi identificado provedor dedicado de e-mail/CRM. Não há `contact_messages`: mensagens de contato não existem como entidade, rota ou UI.
+
+## Layout e apresentação
+
+`app/layout.tsx` monta Header, Footer, fontes locais (Space Grotesk, Inter, JetBrains Mono via `next/font/local`), `MotionProvider`, `JsonLd` e metadata global (título default/template, Open Graph, Twitter, robots indexável no público). As views públicas (`HomeRenderer`, `BiographyView`, `PortfolioView`, `ContactView`) aceitam `asPreview` e são reutilizadas pelos editores do admin para pré-visualização ao vivo. A parede da Home (`PortfolioGallery`) é client-side, com modal acessível (foco, Escape, Tab contido, bloqueio de scroll) e filtros interativos no Portfólio (`PortfolioFilters`: categoria + ordenação curadoria/recentes/antigos).
 
 ## Decisões
 
-Não há ADRs históricos; não é possível inferir a motivação histórica das escolhas. Decisões arquiteturais futuras devem seguir [`../decisions/README.md`](../decisions/README.md).
+Não há ADRs históricos (`docs/decisions/` contém apenas o README de convenções); não é possível inferir a motivação histórica das escolhas. Decisões arquiteturais futuras devem seguir [`../decisions/README.md`](../decisions/README.md).
 
 ## Fundação de portfólio
 
-`types/portfolio.ts` define tipos iniciais para categorias, projetos, mídia, ordenação e status `draft`/`published`. São tipos de domínio sem persistência. Os tipos herdados de serviços, estudos de caso e blog permanecem porque as rotas atuais ainda os importam.
-
-Componentes sem consumidores diretos foram removidos dos diretórios `components/sections/` e `components/motion/`, junto com suas exportações dos barrels. Os módulos de configuração foram renomeados para `config/client-site.ts` e `config/client-navigation.ts` para indicar a responsabilidade de cliente; os valores ainda são herdados e provisórios. Conteúdo e integrações herdadas permanecem enquanto houver consumidores; a adaptação pertence às etapas do site público/limpeza.
+`types/database.ts` espelha o schema Supabase (`Row`/`Insert`/`Update` por tabela, função `is_site_owner`) e `types/portfolio.ts` define os tipos de domínio (categorias, projetos, mídia, ordenação e status `draft`/`published`). Não há tipos herdados de serviços, estudos de caso ou blog. Os módulos de configuração são `config/client-site.ts` (identidade Taís, `locale: "pt-BR"`, URL com fallback localhost) e `config/client-navigation.ts` (HOME/BIOGRAFIA/PORTFÓLIO/CONTATO). Crédito à Conjuga permanece no rodapé público e marca na tela de login do admin, aguardando decisão com material aprovado. Conteúdo editorial não vive em código: sem `content/`, sem demonstrativos, sem Lorem ipsum.

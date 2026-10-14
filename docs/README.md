@@ -5,9 +5,10 @@ Esta documentação distingue o estado implementado dos contratos e planos futur
 ## Documentos atuais
 
 - [`ARCHITECTURE.md`](ARCHITECTURE.md): separação pretendida entre CORE, cliente, conteúdo e dados, mais estrutura atualmente verificada.
-- [`CMS.md`](CMS.md): contrato conceitual inicial do CMS; não descreve implementação.
+- [`CMS.md`](CMS.md): direção conceitual do CMS e estado implementado (rotas, tabelas, templates, Storage).
+- [`CMS-FRONTEND-MAP.md`](CMS-FRONTEND-MAP.md): auditoria do frontend em 2026-10-01, anterior à integração com o CMS; descreve conteúdo demonstrativo já removido — pendente de revisão em etapa própria.
 - [`project-state.md`](project-state.md): estado verificado do checkout e limites conhecidos.
-- [`architecture/overview.md`](architecture/overview.md): detalhes técnicos observados na base existente.
+- [`architecture/overview.md`](architecture/overview.md): detalhes técnicos observados na base pré-CMS; pendente de atualização em etapa própria.
 - [`development/setup.md`](development/setup.md): requisitos, scripts e configuração observados.
 - [`decisions/README.md`](decisions/README.md): convenções para ADRs.
 - [`changelog/CHANGELOG.md`](changelog/CHANGELOG.md): alterações documentadas.
