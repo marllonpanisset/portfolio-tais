@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata, Route } from "next";
+import { redirect } from "next/navigation";
 import { listAllPages } from "@/lib/cms/queries";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
 import { PublishToggle } from "./[id]/PublishToggle";
 
 export const metadata: Metadata = {
@@ -9,6 +11,15 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPagesPage() {
+  const authorization = await requireSiteOwner();
+
+  if (!authorization.authorized) {
+    if (authorization.reason === "unauthenticated") {
+      redirect("/admin/login");
+    }
+    redirect("/");
+  }
+
   const [pagesResult] = await Promise.all([
     listAllPages(),
   ]);

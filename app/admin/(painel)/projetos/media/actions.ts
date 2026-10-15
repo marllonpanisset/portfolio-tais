@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
+import type { createClient } from "@/lib/supabase/server";
 import {
   createMediaRecord,
   deleteMedia as deleteMediaRecord,
@@ -57,13 +58,11 @@ export async function uploadProjectImage(
   projectId: string,
   formData: FormData,
 ): Promise<MutationResult> {
-  const supabase = await createClient();
-
-  // Verify authentication
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) {
-    return { success: false, error: "Usuário não autenticado." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const file = formData.get("file");
   if (!file || !(file instanceof File)) {
@@ -132,13 +131,11 @@ export async function createYouTubeMedia(
   projectId: string,
   url: string,
 ): Promise<MutationResult> {
-  const supabase = await createClient();
-
-  // Verify authentication
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) {
-    return { success: false, error: "Usuário não autenticado." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   // Validate YouTube URL
   const validationError = validateYouTubeUrl(url);
@@ -186,12 +183,9 @@ export async function updateMedia(
   mediaId: string,
   data: MediaUpdateData,
 ): Promise<MutationResult> {
-  const supabase = await createClient();
-
-  // Verify authentication
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) {
-    return { success: false, error: "Usuário não autenticado." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
 
   // Verify media exists
@@ -223,12 +217,9 @@ export async function updateMedia(
 // ============================================================================
 
 export async function deleteMedia(mediaId: string): Promise<MutationResult> {
-  const supabase = await createClient();
-
-  // Verify authentication
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) {
-    return { success: false, error: "Usuário não autenticado." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
 
   // Get media to determine type and storage path
@@ -270,13 +261,11 @@ export async function reorderMedia(
   mediaId: string,
   direction: "up" | "down",
 ): Promise<MutationResult> {
-  const supabase = await createClient();
-
-  // Verify authentication
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData.user) {
-    return { success: false, error: "Usuário não autenticado." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   // Get current media
   const currentResult = await getMediaById(mediaId);

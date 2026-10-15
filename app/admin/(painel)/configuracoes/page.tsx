@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
 import { getSiteSettings } from "@/lib/cms/queries";
 import { SiteSettingsForm } from "./SiteSettingsForm";
 
@@ -10,12 +10,13 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminSettingsPage() {
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
 
-  const { data } = await supabase.auth.getClaims();
-
-  if (!data?.claims) {
-    redirect("/admin/login");
+  if (!authorization.authorized) {
+    if (authorization.reason === "unauthenticated") {
+      redirect("/admin/login");
+    }
+    redirect("/");
   }
 
   const settingsResult = await getSiteSettings();

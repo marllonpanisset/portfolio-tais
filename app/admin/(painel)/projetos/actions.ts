@@ -1,8 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
 import { listAllCategories } from "@/lib/cms/queries";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
+import type { createClient } from "@/lib/supabase/server";
 import type { ProjectInsert, ProjectUpdate } from "@/types/database";
 
 export type MutationResult =
@@ -98,7 +99,11 @@ export async function createProject(
     return { success: false, error: validationError };
   }
 
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
+  }
+  const supabase = authorization.supabase;
 
   const projectData: ProjectInsert = {
     title: data.title.trim(),
@@ -174,7 +179,11 @@ export async function updateProject(
     return { success: false, error: validationError };
   }
 
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
+  }
+  const supabase = authorization.supabase;
 
   const projectData: ProjectUpdate = {
     title: data.title.trim(),
@@ -230,7 +239,11 @@ export async function updateProject(
 }
 
 export async function deleteProject(id: string): Promise<MutationResult> {
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
+  }
+  const supabase = authorization.supabase;
 
   const { data: project } = await supabase
     .from("projects")
@@ -254,7 +267,11 @@ export async function deleteProject(id: string): Promise<MutationResult> {
 }
 
 export async function publishProject(id: string): Promise<MutationResult> {
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
+  }
+  const supabase = authorization.supabase;
 
   const { data: project, error } = await supabase
     .from("projects")
@@ -277,7 +294,11 @@ export async function publishProject(id: string): Promise<MutationResult> {
 }
 
 export async function unpublishProject(id: string): Promise<MutationResult> {
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
+  }
+  const supabase = authorization.supabase;
 
   const { data: project, error } = await supabase
     .from("projects")
@@ -301,7 +322,12 @@ export async function unpublishProject(id: string): Promise<MutationResult> {
 
 /**
  * List all categories for use in client components.
+ * Exige owner: expõe o catálogo completo, incluindo inativas.
  */
 export async function listCategories() {
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { data: null, error: authorization.denialMessage };
+  }
   return listAllCategories();
 }

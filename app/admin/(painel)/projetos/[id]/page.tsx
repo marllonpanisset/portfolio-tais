@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
 import { getProjectById, getProjectCategories, listProjectMedia } from "@/lib/cms/queries";
 import { getMediaUrl } from "@/lib/cms/storage";
 import { ProjectForm } from "../ProjectForm";
@@ -20,12 +20,13 @@ export default async function EditProjectPage({ params, searchParams }: EditProj
   const { id } = await params;
   const { mediaError } = await searchParams;
 
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
 
-  const { data } = await supabase.auth.getClaims();
-
-  if (!data?.claims) {
-    redirect("/admin/login");
+  if (!authorization.authorized) {
+    if (authorization.reason === "unauthenticated") {
+      redirect("/admin/login");
+    }
+    redirect("/");
   }
 
   const [projectResult, categoriesResult, mediaResult] = await Promise.all([

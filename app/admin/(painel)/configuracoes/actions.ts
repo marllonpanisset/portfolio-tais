@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { SITE_SETTING_KEYS, type SiteSettingKey } from "@/lib/cms/site-settings";
-import { createClient } from "@/lib/supabase/server";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
 
 export type SaveSiteSettingsResult =
   | { success: true }
@@ -33,11 +33,11 @@ export async function saveSiteSettings(
     return { success: false, error: "Dados de configuração inválidos." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para salvar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const sanitized: Record<SiteSettingKey, string | null> = {
     instagram: null,

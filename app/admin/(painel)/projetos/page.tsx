@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { listAllProjects } from "@/lib/cms/queries";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
 import type { CategoryRow } from "@/types/database";
 import { ProjectActions } from "./ProjectActions";
 
@@ -9,6 +11,15 @@ export const metadata = {
 };
 
 export default async function AdminProjectsPage() {
+  const authorization = await requireSiteOwner();
+
+  if (!authorization.authorized) {
+    if (authorization.reason === "unauthenticated") {
+      redirect("/admin/login");
+    }
+    redirect("/");
+  }
+
   const [projectsResult] = await Promise.all([
     listAllProjects(),
   ]);

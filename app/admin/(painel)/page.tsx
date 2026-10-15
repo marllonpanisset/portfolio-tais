@@ -1,15 +1,14 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
 
 export default async function AdminPage() {
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/admin/login");
+  if (!authorization.authorized) {
+    if (authorization.reason === "unauthenticated") {
+      redirect("/admin/login");
+    }
+    redirect("/");
   }
 
   return (

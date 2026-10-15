@@ -7,7 +7,7 @@ import { withHomeGalleryLabel } from "@/lib/cms/home-content-update";
 import { validateImageFile } from "@/lib/cms/media";
 import { getMediaUrl, removeImage, uploadImage } from "@/lib/cms/storage";
 import { isStoragePath } from "@/lib/media-url";
-import { createClient } from "@/lib/supabase/server";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
 
 export type SaveHomeGalleryLabelResult =
   | { success: true }
@@ -36,11 +36,11 @@ export async function setPagePublished(
     return { success: false, error: "Estado de publicação inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para continuar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const pageResult = await getPageById(pageId);
   const page = pageResult.data;
@@ -87,11 +87,11 @@ export async function setProjectFeatured(
     return { success: false, error: "Estado de destaque inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para continuar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const update = supabase
     .from("projects")
@@ -127,11 +127,11 @@ export async function saveHomeGalleryLabel(
     return { success: false, error: "Identificador da página inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para salvar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const pageResult = await getPageById(pageId);
   const page = pageResult.data;
@@ -177,11 +177,11 @@ export async function saveBiographyContent(
     return { success: false, error: "Identificador da página inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para salvar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const pageResult = await getPageById(pageId);
   const page = pageResult.data;
@@ -247,11 +247,11 @@ export async function savePortfolioContent(
     return { success: false, error: "Identificador da página inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para salvar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const pageResult = await getPageById(pageId);
   const page = pageResult.data;
@@ -300,11 +300,11 @@ export async function addPortfolioProject(
     return { success: false, error: "Identificador do projeto inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para continuar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const { data: project, error: projectError } = await supabase
     .from("projects")
@@ -347,11 +347,11 @@ export async function removePortfolioProject(
     return { success: false, error: "Identificador do projeto inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para continuar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const { error: deleteError } = await supabase
     .from("portfolio_projects")
@@ -378,11 +378,11 @@ export async function reorderPortfolioProjects(
     return { success: false, error: "Ordem de projetos inválida." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para continuar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   for (const [index, projectId] of orderedProjectIds.entries()) {
     const { error: updateError } = await supabase
@@ -413,11 +413,11 @@ export async function saveContactContent(
     return { success: false, error: "Identificador da página inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para salvar." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
+  const supabase = authorization.supabase;
 
   const pageResult = await getPageById(pageId);
   const page = pageResult.data;
@@ -467,10 +467,9 @@ export async function uploadBiographyImage(
     return { success: false, error: "Identificador da página inválido." };
   }
 
-  const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getClaims();
-  if (authError || !authData?.claims) {
-    return { success: false, error: "Sua sessão expirou. Entre novamente para enviar a imagem." };
+  const authorization = await requireSiteOwner();
+  if (!authorization.authorized) {
+    return { success: false, error: authorization.denialMessage };
   }
 
   const pageResult = await getPageById(pageId);

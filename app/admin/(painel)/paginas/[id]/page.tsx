@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { notFound, redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireSiteOwner } from "@/lib/supabase/require-site-owner";
 import {
   getPageById,
   listAllPortfolioProjects,
@@ -79,12 +79,13 @@ const EMPTY_CONTACT_CONTENT: ContactPageContent = {
 export default async function EditPagePage({ params }: EditPagePageProps) {
   const { id } = await params;
 
-  const supabase = await createClient();
+  const authorization = await requireSiteOwner();
 
-  const { data } = await supabase.auth.getClaims();
-
-  if (!data?.claims) {
-    redirect("/admin/login");
+  if (!authorization.authorized) {
+    if (authorization.reason === "unauthenticated") {
+      redirect("/admin/login");
+    }
+    redirect("/");
   }
 
   const pageResult = await getPageById(id);
