@@ -10,7 +10,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "analyze": "next experimental-analyze"
+    "analyze": "next experimental-analyze",
+    "test": "npm run test:unit",
+    "test:unit": "rm -rf /tmp/opencode/unit /tmp/opencode/unit-stub && mkdir -p /tmp/opencode/unit-stub/node_modules/server-only && printf '{\"name\":\"server-only\",\"version\":\"0.0.1\",\"main\":\"index.js\"}' > /tmp/opencode/unit-stub/node_modules/server-only/package.json && printf 'module.exports={};' > /tmp/opencode/unit-stub/node_modules/server-only/index.js && npx tsc lib/cms/content-validation.test.ts lib/cms/home-content-update.test.ts lib/cms/page-builder.test.ts lib/home-content.test.ts lib/supabase/site-owner-decision.test.ts lib/supabase/site-owner-decision.ts lib/supabase/require-site-owner.test.ts lib/supabase/require-site-owner.ts lib/supabase/admin-authorization-guard.test.ts lib/test/assert-local-env.test.ts lib/test/assert-local-env.ts tests/integration/manifest.test.ts tests/integration/manifest.ts --outDir /tmp/opencode/unit --module commonjs --target es2022 --strict --skipLibCheck --esModuleInterop && NODE_PATH=/tmp/opencode/unit-stub/node_modules node --test $(find /tmp/opencode/unit -name '*.test.js') lib/home-media.test.mjs",
+    "test:integration": "rm -rf /tmp/opencode/integ && npx tsc tests/integration/env.local.ts tests/integration/rls.test.ts tests/integration/storage.test.ts tests/integration/http-admin.test.ts lib/test/assert-local-env.ts --outDir /tmp/opencode/integ --module commonjs --target es2022 --strict --skipLibCheck --esModuleInterop && NODE_PATH=\"$PWD/node_modules\" node --test $(find /tmp/opencode/integ -name '*.test.js')"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -18,7 +21,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^11.15.0",
     "lucide-react": "^0.469.0",
-    "next": "^16.2.11",
+    "next": "^16.4.5",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "simple-icons": "^12.4.0",
@@ -30,7 +33,7 @@
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "eslint": "^9.17.0",
-    "eslint-config-next": "^16.2.11",
+    "eslint-config-next": "^16.4.5",
     "postcss": "^8.4.49",
     "supabase": "2.118.0",
     "tailwindcss": "^4.0.0",

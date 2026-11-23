@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition, type ReactNode } from "react";
+import { useRef, useState, useTransition, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Route } from "next";
@@ -51,7 +51,6 @@ export function HomePageEditor({
   const [selectedField, setSelectedField] = useState<"galleryLabel" | null>(null);
   const galleryLabelInputRef = useRef<HTMLInputElement>(null);
   const [localGalleryLabel, setLocalGalleryLabel] = useState(galleryLabel ?? "");
-  const [selectedProjectId, setSelectedProjectId] = useState("");
   const previewWithLocalLabel: HomeContent = {
     ...previewContent,
     gallery: {
@@ -59,6 +58,19 @@ export function HomePageEditor({
       label: localGalleryLabel,
     },
   };
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : true,
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   function handleSave() {
     setFeedback(null);
@@ -99,7 +111,7 @@ export function HomePageEditor({
 
   return (
     <div className="fixed inset-0 z-50 flex h-screen flex-col bg-surface">
-      <header className="flex h-14 shrink-0 items-center justify-between border-b border-border/70 bg-surface-elevated px-4">
+      <header className="flex flex-col sm:flex-row h-16 shrink-0 items-center justify-between border-b border-border/70 bg-surface-elevated px-4">
         <div className="flex items-center gap-3">
           <Link
             href={"/admin/paginas" as Route}
@@ -113,14 +125,46 @@ export function HomePageEditor({
         <div className="flex items-center gap-3">
           <PublishToggle pageId={pageId} initialIsPublished={isPublished} showStatus />
           <span className="hidden text-xs text-text-secondary sm:inline">Home</span>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={isPending}
-            className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
-          >
-            {isPending ? "Salvando…" : "Salvar"}
-          </button>
+          {isMobile
+            ? isPreviewOpen ? (
+              <button
+                type="button"
+                onClick={() => setIsPreviewOpen(false)}
+                className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
+              >
+                Voltar à edição
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsPreviewOpen(true)}
+                className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary transition-colors hover:border-border hover:text-text-primary"
+              >
+                Visualizar página
+              </button>
+            )
+            : (
+            <>
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isPending}
+                className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
+              >
+                {isPending ? "Salvando…" : "Salvar"}
+              </button>
+            </>
+          )}
+          {isMobile && (
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={isPending}
+              className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
+            >
+              {isPending ? "Salvando…" : "Salvar"}
+            </button>
+          )}
         </div>
       </header>
 
@@ -260,9 +304,9 @@ export function HomePageEditor({
 
         <section
           aria-label="Prévia da Home"
-          className="min-h-0 flex-1 overflow-y-auto bg-[#e9e9e7] p-4 sm:p-6"
+          className={isMobile && !isPreviewOpen ? "hidden" : "min-h-0 flex-1 overflow-y-auto bg-surface p-4 sm:p-6"}
         >
-          <div className="mx-auto min-h-full max-w-6xl overflow-hidden bg-white shadow-sm">
+          <div className="mx-auto min-h-full max-w-6xl overflow-y-auto bg-white shadow-sm">
             {previewHeader}
             <HomeRenderer
               content={previewWithLocalLabel}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import type { PageRow } from "@/types/database";
@@ -52,6 +52,19 @@ export function PageEditor({ page }: PageEditorProps) {
     normalizeContent(page.content),
   );
   const [selection, setSelection] = useState<Selection | null>(null);
+
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : true,
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // ==========================================================================
   // Section Operations
@@ -167,7 +180,8 @@ export function PageEditor({ page }: PageEditorProps) {
   return (
     <div className="fixed inset-0 z-50 flex h-screen flex-col bg-surface">
       {/* TOP BAR */}
-      <header className="flex h-14 shrink-0 items-center justify-between border-b border-border/70 bg-surface-elevated px-4">
+            <header className="flex flex-col sm:flex-row h-16 shrink-0 items-center justify-between border-b border-border/70 bg-surface-elevated px-4 min-h-0 overflow-y-auto">
+
         <div className="flex items-center gap-3">
           <Link
             href={"/admin/paginas" as Route}
@@ -175,32 +189,49 @@ export function PageEditor({ page }: PageEditorProps) {
           >
             Fechar
           </Link>
-          <div className="h-4 w-px bg-border" />
           <span className="text-sm font-medium text-text-primary">
             {page.title}
           </span>
         </div>
+
+
         <div className="flex items-center gap-2">
           <PublishToggle pageId={page.id} initialIsPublished={page.is_published} showStatus />
+        </div>
+
+
+        <div className="flex items-center gap-3">
+          {!isPreviewOpen && (
+            <button
+              type="button"
+              onClick={() => setIsPreviewOpen(true)}
+              className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary transition-colors hover:border-border hover:text-text-primary"
+            >
+              Visualizar página
+            </button>
+          )}
+          {isPreviewOpen && (
+            <button
+              type="button"
+              onClick={() => setIsPreviewOpen(false)}
+              className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
+            >
+              Voltar à edição
+            </button>
+          )}
           <button
+            type="button"
             disabled
-            className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary opacity-50 cursor-not-allowed"
-            title="Em breve"
-          >
-            Visualizar
-          </button>
-          <button
-            disabled
+            title="Salvamento ainda não disponível para este modelo de página"
             className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white opacity-50 cursor-not-allowed"
-            title="Em breve"
           >
-            Salvar
+            Salvar indisponível
           </button>
         </div>
       </header>
 
       {/* MAIN AREA */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col md:flex-row overflow-y-auto">
         {/* SIDEBAR */}
         <aside className="flex w-52 shrink-0 flex-col border-r border-border/70 bg-surface-elevated sm:w-64">
           <div className="flex-1 overflow-y-auto p-4">
@@ -258,7 +289,11 @@ export function PageEditor({ page }: PageEditorProps) {
         </aside>
 
         {/* CANVAS */}
-        <main className="flex-1 overflow-y-auto bg-surface p-4 sm:p-8">
+        <main
+      className={`flex-1 overflow-y-auto bg-surface p-4 sm:p-8 ${
+        isMobile && !isPreviewOpen ? "hidden" : ""
+      }`}
+    >
           {content.sections.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center">
               <p className="text-sm text-text-muted">

@@ -40,7 +40,7 @@ test("maps projects to valid Home content with ordered items and media", () => {
   assert.deepEqual(result.gallery.items.map((item) => item.id), ["first", "later"]);
   assert.deepEqual(result.gallery.items[1]?.media.map((item) => item.id), ["cover", "video"]);
   assert.equal(result.gallery.items[1]?.media[0]?.kind, "image");
-  assert.equal(result.gallery.items[1]?.media[1]?.kind, "video");
+  assert.equal(result.gallery.items[1]?.media[1]?.kind, "youtube");
   assert.equal(result.gallery.items[1]?.media[0]?.alt, "Cover");
   assert.equal(result.gallery.items[1]?.media[0]?.caption, "A cover");
   assert.equal(result.gallery.items[1]?.category, "Category");
