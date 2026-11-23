@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect, type ReactNode } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Route } from "next";
@@ -56,19 +56,6 @@ export function PortfolioPageEditor({
   >(null);
   const [localContent, setLocalContent] = useState<PortfolioPageContent>(initialContent);
   const [selectedProjectId, setSelectedProjectId] = useState("");
-
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" ? window.innerWidth < 768 : true,
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   function updateField<Key extends keyof PortfolioPageContent>(
     key: Key,
@@ -140,9 +127,9 @@ export function PortfolioPageEditor({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex h-screen flex-col bg-surface">
-      <header className="flex flex-col sm:flex-row h-16 shrink-0 items-center justify-between border-b border-border/70 bg-surface-elevated px-4">
-        <div className="flex items-center gap-3">
+    <div className="fixed inset-0 z-50 flex h-dvh min-h-0 flex-col overflow-hidden bg-surface">
+      <header className="flex min-h-16 shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border/70 bg-surface-elevated px-3 py-2 md:h-16 md:flex-nowrap md:px-4 md:py-0">
+        <div className="flex w-full items-center justify-between gap-2 md:w-auto md:justify-start">
           <Link
             href={"/admin/paginas" as Route}
             className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary transition-colors hover:border-border hover:text-text-primary"
@@ -152,54 +139,22 @@ export function PortfolioPageEditor({
           <div className="h-4 w-px bg-border" />
           <h1 className="text-sm font-medium text-text-primary">Portfólio</h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full items-center justify-between gap-3 md:w-auto md:justify-end">
           <PublishToggle pageId={pageId} initialIsPublished={isPublished} showStatus />
-          <span className="hidden text-xs text-text-secondary sm:inline">Portfólio</span>
-          {isMobile
-            ? isPreviewOpen ? (
-              <button
-                type="button"
-                onClick={() => setIsPreviewOpen(false)}
-                className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
-              >
-                Voltar à edição
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsPreviewOpen(true)}
-                className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary transition-colors hover:border-border hover:text-text-primary"
-              >
-                Visualizar página
-              </button>
-            )
-            : (
-          <>
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={isPending}
-              className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
-            >
-              {isPending ? "Salvando…" : "Salvar"}
-            </button>
-          </>
-        )}
-          {isMobile && (
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={isPending}
-              className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
-            >
-              {isPending ? "Salvando…" : "Salvar"}
-            </button>
-          )}
+          <span className="hidden text-xs text-text-secondary md:inline">Portfólio</span>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={isPending}
+            className="inline-flex h-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
+          >
+            {isPending ? "Salvando…" : "Salvar"}
+          </button>
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-        <aside className="shrink-0 overflow-y-auto border-b border-border/70 bg-surface-elevated p-5 md:w-80 md:border-b-0 md:border-r">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto md:flex-row md:overflow-hidden">
+        <aside className="min-h-0 w-full flex-1 overflow-y-auto border-b border-border/70 bg-surface-elevated p-5 md:w-80 md:flex-none md:border-b-0 md:border-r">
           <h2 className="text-xs font-medium uppercase tracking-wider text-text-muted">
             Portfólio
           </h2>
@@ -373,7 +328,7 @@ export function PortfolioPageEditor({
 
         <section
           aria-label="Prévia do Portfólio"
-          className={isMobile && !isPreviewOpen ? "hidden" : "min-h-0 flex-1 overflow-y-auto bg-surface p-4 sm:p-6"}
+          className="hidden min-h-0 flex-1 overflow-y-auto bg-surface p-4 sm:p-6 md:block"
         >
           <div className="mx-auto min-h-full max-w-6xl overflow-y-auto bg-white shadow-sm">
             {previewHeader}

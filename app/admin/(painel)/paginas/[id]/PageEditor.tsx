@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import type { PageRow } from "@/types/database";
@@ -52,19 +52,7 @@ export function PageEditor({ page }: PageEditorProps) {
     normalizeContent(page.content),
   );
   const [selection, setSelection] = useState<Selection | null>(null);
-
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" ? window.innerWidth < 768 : true,
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // ==========================================================================
   // Section Operations
@@ -178,11 +166,10 @@ export function PageEditor({ page }: PageEditorProps) {
   // ==========================================================================
 
   return (
-    <div className="fixed inset-0 z-50 flex h-screen flex-col bg-surface">
+    <div className="fixed inset-0 z-50 flex h-dvh min-h-0 flex-col overflow-hidden bg-surface">
       {/* TOP BAR */}
-            <header className="flex flex-col sm:flex-row h-16 shrink-0 items-center justify-between border-b border-border/70 bg-surface-elevated px-4 min-h-0 overflow-y-auto">
-
-        <div className="flex items-center gap-3">
+      <header className="flex min-h-16 shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border/70 bg-surface-elevated px-3 py-2 md:h-16 md:flex-nowrap md:px-4 md:py-0">
+        <div className="flex w-full items-center justify-between gap-2 md:w-auto md:justify-start">
           <Link
             href={"/admin/paginas" as Route}
             className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary transition-colors hover:border-border hover:text-text-primary"
@@ -193,32 +180,16 @@ export function PageEditor({ page }: PageEditorProps) {
             {page.title}
           </span>
         </div>
-
-
-        <div className="flex items-center gap-2">
+        <div className="flex w-full items-center justify-between gap-3 md:w-auto md:justify-end">
           <PublishToggle pageId={page.id} initialIsPublished={page.is_published} showStatus />
-        </div>
-
-
-        <div className="flex items-center gap-3">
-          {!isPreviewOpen && (
-            <button
-              type="button"
-              onClick={() => setIsPreviewOpen(true)}
-              className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary transition-colors hover:border-border hover:text-text-primary"
-            >
-              Visualizar página
-            </button>
-          )}
-          {isPreviewOpen && (
-            <button
-              type="button"
-              onClick={() => setIsPreviewOpen(false)}
-              className="inline-flex h-8 items-center justify-center rounded-[var(--radius-sm)] bg-signal px-3 text-xs font-medium text-white transition-opacity hover:opacity-85 disabled:cursor-wait disabled:opacity-60"
-            >
-              Voltar à edição
-            </button>
-          )}
+          <span className="hidden text-xs text-text-secondary md:inline">{page.title}</span>
+          <button
+            type="button"
+            onClick={() => setIsPreviewOpen((open) => !open)}
+            className="hidden h-8 items-center justify-center rounded-[var(--radius-sm)] border border-border/70 bg-surface px-3 text-xs font-medium text-text-secondary transition-colors hover:border-border hover:text-text-primary md:inline-flex"
+          >
+            {isPreviewOpen ? "Voltar à edição" : "Visualizar página"}
+          </button>
           <button
             type="button"
             disabled
@@ -231,10 +202,10 @@ export function PageEditor({ page }: PageEditorProps) {
       </header>
 
       {/* MAIN AREA */}
-      <div className="flex min-h-0 flex-1 flex-col md:flex-row overflow-y-auto">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto md:flex-row md:overflow-hidden">
         {/* SIDEBAR */}
-        <aside className="flex w-52 shrink-0 flex-col border-r border-border/70 bg-surface-elevated sm:w-64">
-          <div className="flex-1 overflow-y-auto p-4">
+        <aside className="flex w-full shrink-0 flex-col border-b border-border/70 bg-surface-elevated md:w-64 md:border-b-0 md:border-r">
+          <div className="p-4 md:min-h-0 md:flex-1 md:overflow-y-auto">
             <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-text-muted">
               Elementos
             </h2>
@@ -289,11 +260,7 @@ export function PageEditor({ page }: PageEditorProps) {
         </aside>
 
         {/* CANVAS */}
-        <main
-      className={`flex-1 overflow-y-auto bg-surface p-4 sm:p-8 ${
-        isMobile && !isPreviewOpen ? "hidden" : ""
-      }`}
-    >
+        <main className="flex-1 bg-surface p-4 sm:p-8 md:min-h-0 md:overflow-y-auto">
           {content.sections.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center">
               <p className="text-sm text-text-muted">
