@@ -75,11 +75,11 @@ export function AdminHeader({ userName, onMenuClick }: AdminHeaderProps) {
               aria-expanded={isUserMenuOpen}
               aria-controls="admin-user-menu"
               aria-haspopup="true"
+              aria-label="Abrir menu do usuário"
               onClick={() => setIsUserMenuOpen((open) => !open)}
-              className="inline-flex min-h-11 max-w-[min(18rem,60vw)] items-center gap-2 rounded-md px-3 text-sm font-medium text-text-primary transition-colors hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border/70 bg-surface-elevated text-text-secondary transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
             >
-              <UserRound className="h-5 w-5 shrink-0 text-text-secondary" aria-hidden="true" />
-              <span className="truncate">{userName}</span>
+              <UserRound className="h-5 w-5" aria-hidden="true" />
             </button>
 
             {isUserMenuOpen && (
