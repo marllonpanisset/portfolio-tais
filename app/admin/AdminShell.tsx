@@ -7,10 +7,10 @@ import { AdminHeader } from "./AdminHeader";
 import { Sidebar } from "./Sidebar";
 
 export function AdminShell({
-  userEmail,
+  userName,
   children,
 }: {
-  userEmail: string;
+  userName: string;
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -30,7 +30,7 @@ export function AdminShell({
 
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminHeader
-          userEmail={userEmail}
+          userName={userName}
           onMenuClick={() => setSidebarOpen(true)}
         />
 
